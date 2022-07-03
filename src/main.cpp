@@ -47,20 +47,6 @@ void initialize() {
 	pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
 
-	// while (imu1.isCalibrating() || imu1.isCalibrating()) {
-	// 	pros::lcd::set_text(2, "Calibrating IMUs...");
-	// 	rate.delay(100_Hz);
-	// }
-	// pros::lcd::set_text(2, "IMUs done calibrating.");
-
-	// initialize IMUs
-	// imu1.calibrate();
-	// imu2.calibrate();
-
-	// completion notification
-	// std::cout << "IMU initialization complete." << '\n';
-	// pros::lcd::set_text(1, "IMU initialization complete.");
-
 	// messages
 	// LOG_DEBUG_S("Initializing...");
 	// LOG_DEBUG_S("Initialization Complete.");
