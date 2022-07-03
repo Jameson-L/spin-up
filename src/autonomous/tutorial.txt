@@ -1,0 +1,26 @@
+hi shubham
+
+movement functions:
+
+void odomDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4, bool persist = false, bool rush = false, int useVision = 0);
+x is forward/backward
+y is left/right
+forward is default to true
+offset: try to avoid using this; it doesnt work with jcurve if its negative; ONLY use it IF you are OVERSHOOTING by a little bit and want to save time by just cutting the distance without recalculating coordinates
+speedMultiplier is max speed
+time is max time in seconds
+persist is for use in auton; enabling it causes the bot to switch to torque and back up when encountering resistance
+rush is for use in auton; enabling it will cause it to go at full speed and stop instantly when reaching target OR when bumper is pressed
+useVision: 0 is off, 1 is front vision, 2 is back vision
+
+void jCurve(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4, bool persist = false, bool rush = false, int useVision = 0);
+same thing but jCurve
+
+void imuTurnToAngle(double deg);
+you literally wrote this
+
+void imuZeroToAngle(double deg, double time = 2);
+hi
+
+void relative(double x, double time = 2);
+relative forward/backward movement
