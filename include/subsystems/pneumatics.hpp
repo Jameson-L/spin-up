@@ -3,6 +3,3 @@
 
 extern int kPneumaticIndexerPort;
 extern int kPneumaticExpansionPort;
-
-void index();
-void expand();

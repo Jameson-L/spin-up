@@ -6,10 +6,10 @@ using namespace okapi::literals;
 
 // defining chassis ports, negative is reversed
 // i is inner, o is outer
-const int8_t kDriveLBPort = -16;
+const int8_t kDriveLBPort = 16;
 const int8_t kDriveLIPort = -19;
 const int8_t kDriveLOPort = 11;
-const int8_t kDriveRBPort = 20;
+const int8_t kDriveRBPort = -20;
 const int8_t kDriveRIPort = 12;
 const int8_t kDriveROPort = -15;
 

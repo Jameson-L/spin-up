@@ -113,6 +113,7 @@ void opcontrol() {
 	// power variables
 	double leftY;
 	double rightY;
+	bool flywheelToggle = false;
 
 	// bool reverseDrive = false;
 
@@ -138,21 +139,47 @@ void opcontrol() {
 		// std::cout << "y-pos: " << pos.y.convert(okapi::foot) << '\n';
 		// std::cout << "theta: " << pos.theta.convert(okapi::degree) << ' ';
 		// std::cout<< "imu: " << getHeading() << '\n';
-		// std::cout << bumper.isPressed() << "\n";
 		// std::cout << allMotors.getEfficiency() << "\n";
 
-		// std::cout << "lowLiftPot: " << powersharePot.controllerGet() << '\n';
-		// std::cout << "highLiftPot: " << highLiftFilter.filter(highLiftLPot.controllerGet())  << '\n';
+		if (controller[okapi::ControllerDigital::R1].changedToPressed()) {
+			flywheelToggle = !flywheelToggle;
+		}
+		if (flywheelToggle) {
+			flywheel.moveVelocity(600);
+		} else {
+			flywheel.moveVelocity(0);
+		}
+		if (controller[okapi::ControllerDigital::R2].isPressed()) {
+			pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
+		} else {
+			pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
+		}
+		if (controller[okapi::ControllerDigital::L1].isPressed()) {
+			intake.controllerSet(1);
+		} else {
+			intake.controllerSet(0);
+		}
+		if (controller[okapi::ControllerDigital::L2].isPressed()) {
+			intake.controllerSet(-1);
+		} else {
+			intake.controllerSet(0);
+		}
+		if (controller[okapi::ControllerDigital::L1].isPressed()
+		&& controller[okapi::ControllerDigital::L2].isPressed()
+		&& controller[okapi::ControllerDigital::R1].isPressed()
+		&& controller[okapi::ControllerDigital::R2].isPressed()) {
+			pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
+		}
+		if (controller[okapi::ControllerDigital::X].isPressed()) {
+			intake.controllerSet(0.1);
+		} else {
+			intake.controllerSet(0);
+		}
 
-		// std::cout << "x: " << vision.get_by_size(0).x_middle_coord << "\n";
-		// std::cout << "y: " << vision.get_by_size(0).y_middle_coord << "\n";
-		// std::cout << LBDistanceSensor.getObjectSize() << "\n";
 
 		// set power variables
 		leftY = controller.getAnalog(okapi::ControllerAnalog::leftY);
 		rightY = controller.getAnalog(okapi::ControllerAnalog::rightY);
-
-		// toggles
 		chassis->getModel()->tank(leftY, rightY);
 
 		rate.delay(100_Hz);
