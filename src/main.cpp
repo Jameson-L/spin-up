@@ -168,7 +168,7 @@ void opcontrol() {
 		&& controller[okapi::ControllerDigital::L2].isPressed()
 		&& controller[okapi::ControllerDigital::R1].isPressed()
 		&& controller[okapi::ControllerDigital::R2].isPressed()) {
-			pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
+			pros::c::adi_digital_write(kPneumaticExpansionPort, HIGH);
 		}
 		if (controller[okapi::ControllerDigital::X].isPressed()) {
 			intake.controllerSet(0.1);
