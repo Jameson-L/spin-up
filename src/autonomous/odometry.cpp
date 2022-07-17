@@ -9,7 +9,7 @@ okapi::ADIEncoder LTrackingWheel = okapi::ADIEncoder({2, 0, 0}, false);
 okapi::ADIEncoder RTrackingWheel = okapi::ADIEncoder({2, 0, 0}, false);
 // okapi::ADIEncoder MTrackingWheel = okapi::ADIEncoder(0, 0, true);
 
-okapi::IMU imu1 = okapi::IMU(0, okapi::IMUAxes::z);
+okapi::IMU imu1 = okapi::IMU(9, okapi::IMUAxes::z);
 okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
 okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.05, 0.0, 0.001);
