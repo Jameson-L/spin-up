@@ -9,7 +9,7 @@
 
 // units
 // using namespace okapi::literals;
-okapi::ADIButton selector = okapi::ADIButton(0);
+okapi::ADIButton selector = okapi::ADIButton(4);
 int auton = 0;
 
 void on_center_button() {
@@ -46,7 +46,7 @@ void initialize() {
 	pros::lcd::set_text(1, "Among.");
 	pros::lcd::register_btn1_cb(on_center_button);
 
-	pros::c::adi_pin_mode(0, INPUT);
+	pros::c::adi_pin_mode(4, INPUT);
 	pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
 
@@ -54,19 +54,19 @@ void initialize() {
 	// LOG_DEBUG_S("Initializing...");
 	// LOG_DEBUG_S("Initialization Complete.");
 
-	while (true) {
-		if (selector.changedToPressed()) {
-			auton = (auton+1) % 3;
-		}
-		if (auton == 0) {
-			pros::lcd::set_text(2, "");
-		} else if (auton == 1) {
-			pros::lcd::set_text(2, "");
-		} else {
-			pros::lcd::set_text(2, "");
-		}
-		pros::delay(100);
-	}
+	// while (true) {
+		// if (selector.changedToPressed()) {
+			// auton = (auton+1) % 3;
+		// }
+		// if (auton == 0) {
+		// 	pros::lcd::set_text(3, "");
+		// } else if (auton == 1) {
+		// 	pros::lcd::set_text(2, "");
+		// } else {
+		// 	pros::lcd::set_text(2, "");
+		// }
+		// pros::delay(100);
+	// }
 }
 
 /**
@@ -103,7 +103,7 @@ void autonomous() {
 	okapi::MotorGroup allMotors({kDriveLIPort, kDriveLOPort, kDriveLBPort, kDriveRBPort, kDriveRIPort, kDriveROPort});
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
 	if (auton == 0) {
-
+			imuTurnToAngle(90);
 	} else if (auton == 1) {
 
 	} else {
@@ -129,7 +129,7 @@ void autonomous() {
 void stepAutoAim() {
 	double x, y;
 	if (auton == 0) {
-			x = 8, y = 5;
+			x = 9, y = 4;
 	} else {
 		x = 8, y = -1;
 	}
@@ -141,11 +141,17 @@ void stepAutoAim() {
 	} else if (x < 0 && y < 0) {
 	 angle -= 180;
 	}
+	if (auton == 0) {
+		if (angle < 45) {
+			angle -= 20;
+		} else if (angle > 45) {
+			angle -= 10;
+		}
+	}
 	chassisTurnPid.setTarget(angle);
 	double chassisPidValue = chassisTurnPid.step(getHeading(false));
 	// std::cout << chassisPidValue << " " << angle << " " << getHeading(false) << " " << chassisTurnPid.step(getHeading(false)) << "\n";
 	chassis->getModel()->tank(chassisPidValue, -1*chassisPidValue);
-	chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
 }
 
 void opcontrol() {
@@ -175,8 +181,9 @@ void opcontrol() {
 		// std::cout <<"running op control" << "\n";
 
 		// printing odometry tests
-		// okapi::OdomState pos = chassis->getState();
-		// pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
+		okapi::OdomState pos = chassis->getState();
+		pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
+		pros::lcd::set_text(2, std::to_string(pos.y.convert(okapi::foot)));
 
 		// std::cout << "left: " << LTrackingWheel.controllerGet() << '\n';
 		// std::cout << "right: " << RTrackingWheel.controllerGet() << '\n';
@@ -227,7 +234,7 @@ void opcontrol() {
 			allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 			chassis->getModel()->tank(leftY, rightY);
 		}
-
+		chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
 		rate.delay(100_Hz);
 	}
 }
