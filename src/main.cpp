@@ -103,7 +103,7 @@ void autonomous() {
 	okapi::MotorGroup allMotors({kDriveLIPort, kDriveLOPort, kDriveLBPort, kDriveRBPort, kDriveRIPort, kDriveROPort});
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
 	if (auton == 0) {
-			imuTurnToAngle(90);
+
 	} else if (auton == 1) {
 
 	} else {
@@ -213,6 +213,8 @@ void opcontrol() {
 			intake.controllerSet(-1);
 		} else if (controller[okapi::ControllerDigital::X].isPressed()) {
 			intake.moveVelocity(50);
+		} else if (controller[okapi::ControllerDigital::B].isPressed()) {
+			intake.moveVelocity(-50);
 		} else {
 			intake.controllerSet(0);
 		}
