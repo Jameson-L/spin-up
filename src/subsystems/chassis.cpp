@@ -9,8 +9,8 @@ using namespace okapi::literals;
 const int8_t kDriveLBPort = -20;
 const int8_t kDriveLIPort = 3;
 const int8_t kDriveLOPort = -15;
-const int8_t kDriveRBPort = 16;
-const int8_t kDriveRIPort = -14;
+const int8_t kDriveRBPort = 14;
+const int8_t kDriveRIPort = -16;
 const int8_t kDriveROPort = 2;
 
 // creating chassis object

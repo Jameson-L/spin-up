@@ -1,4 +1,4 @@
 #include "main.h"
 #include "subsystems/intake.hpp"
 
-okapi::Motor intake(11);
+okapi::Motor intake(13);

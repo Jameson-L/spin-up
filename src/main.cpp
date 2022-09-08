@@ -218,18 +218,18 @@ void opcontrol() {
 		} else {
 			intake.controllerSet(0);
 		}
-		if (controller[okapi::ControllerDigital::L1].isPressed()
-		&& controller[okapi::ControllerDigital::L2].isPressed()
-		&& controller[okapi::ControllerDigital::R1].isPressed()
-		&& controller[okapi::ControllerDigital::R2].isPressed()) {
+		if (controller[okapi::ControllerDigital::up].isPressed()) {
 			pros::c::adi_digital_write(kPneumaticExpansionPort, HIGH);
+		}
+		if (controller[okapi::ControllerDigital::down].isPressed()){
+			pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
 		}
 
 		// set power variables
 		leftY = controller.getAnalog(okapi::ControllerAnalog::leftY);
 		rightY = controller.getAnalog(okapi::ControllerAnalog::rightY);
 
-		if (controller[okapi::ControllerDigital::up].isPressed()) {
+		if (controller[okapi::ControllerDigital::down].isPressed()) {
 			allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
 			stepAutoAim();
 		} else {
