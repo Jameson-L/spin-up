@@ -29,4 +29,4 @@ void odomDriveToPoint(double x, double y, bool forward=true, double offset = 0.0
 void jCurve(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
 void imuTurnToAngle(double deg);
 void imuZeroToAngle(double deg, double time = 2);
-void relative(double x, double time = 2);
+void relative(double x, double speedMultiplier = 1, double time = 2);

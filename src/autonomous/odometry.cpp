@@ -12,7 +12,7 @@ okapi::ADIEncoder RTrackingWheel = okapi::ADIEncoder({2, 0, 0}, false);
 okapi::IMU imu1 = okapi::IMU(9, okapi::IMUAxes::z);
 okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
-okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.029, 0.0, 0.001);
+okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.028, 0.0, 0.001);
 okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(0.55, 0.01, 0.02);
 okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFactory::posPID(0.25, 0.0, 0.0025);
 
@@ -201,7 +201,7 @@ void jCurve(double x, double y, bool forward, double offset, double speedMultipl
   // std::cout << "actual: " << chassis->getState().x.convert(okapi::foot) << ", " << chassis->getState().y.convert(okapi::foot) << "\n";
 }
 
-void relative(double x, double time) { // in feet, x is forward, y is sideways
+void relative(double x, double speedMultiplier, double time) { // in feet, x is forward, y is sideways
   double target = x;
   chassisDrivePid.setTarget(target);
 
@@ -215,6 +215,7 @@ void relative(double x, double time) { // in feet, x is forward, y is sideways
 
   okapi::Timer timer;
   double init = timer.millis().convert(okapi::second);
+  double modified = 0;
 
   while (!(abs(target - encoderReading) < 0.25 && !isMoving())) {
     chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
@@ -226,7 +227,17 @@ void relative(double x, double time) { // in feet, x is forward, y is sideways
     }
     chassisPidValue = chassisDrivePid.step(encoderReading);
     // std::cout << encoderReading << " " << target << "\n";
-    chassis->getModel()->tank(chassisPidValue, chassisPidValue);
+
+    if (abs(chassisPidValue) > abs(speedMultiplier)) {
+      if (chassisPidValue > 0) {
+        modified = speedMultiplier;
+      } else {
+        modified = speedMultiplier * -1;
+      }
+    } else {
+      modified = chassisPidValue;
+    }
+    chassis->getModel()->tank(modified, modified);
     if (timer.millis().convert(okapi::second) - init > time) {
       break;
     }

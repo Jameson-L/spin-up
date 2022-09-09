@@ -55,17 +55,17 @@ void initialize() {
 	// LOG_DEBUG_S("Initialization Complete.");
 
 	// while (true) {
-		// if (selector.changedToPressed()) {
-			// auton = (auton+1) % 3;
-		// }
-		// if (auton == 0) {
-		// 	pros::lcd::set_text(3, "");
-		// } else if (auton == 1) {
-		// 	pros::lcd::set_text(2, "");
-		// } else {
-		// 	pros::lcd::set_text(2, "");
-		// }
-		// pros::delay(100);
+	// 	if (selector.changedToPressed()) {
+	// 		auton = (auton+1) % 3;
+	// 	}
+	// 	if (auton == 0) {
+	// 		pros::lcd::set_text(3, "");
+	// 	} else if (auton == 1) {
+	// 		pros::lcd::set_text(2, "");
+	// 	} else {
+	// 		pros::lcd::set_text(2, "");
+	// 	}
+	// 	pros::delay(100);
 	// }
 }
 
@@ -103,7 +103,8 @@ void autonomous() {
 	okapi::MotorGroup allMotors({kDriveLIPort, kDriveLOPort, kDriveLBPort, kDriveRBPort, kDriveRIPort, kDriveROPort});
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
 	if (auton == 0) {
-
+		// right();
+		left();
 	} else if (auton == 1) {
 
 	} else {
@@ -157,6 +158,7 @@ void stepAutoAim() {
 void opcontrol() {
 	// OUR CODE:
 	// creating logger
+	std::cout << auton;
 	auto logger = okapi::Logger::getDefaultLogger();
 	okapi::Controller controller;
 	okapi::Controller controller2 = okapi::Controller(okapi::ControllerId::partner);
@@ -182,8 +184,8 @@ void opcontrol() {
 
 		// printing odometry tests
 		okapi::OdomState pos = chassis->getState();
-		pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
-		pros::lcd::set_text(2, std::to_string(pos.y.convert(okapi::foot)));
+		// pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
+		// pros::lcd::set_text(2, std::to_string(pos.y.convert(okapi::foot)));
 
 		// std::cout << "left: " << LTrackingWheel.controllerGet() << '\n';
 		// std::cout << "right: " << RTrackingWheel.controllerGet() << '\n';
@@ -229,13 +231,13 @@ void opcontrol() {
 		leftY = controller.getAnalog(okapi::ControllerAnalog::leftY);
 		rightY = controller.getAnalog(okapi::ControllerAnalog::rightY);
 
-		if (controller[okapi::ControllerDigital::down].isPressed()) {
-			allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
-			stepAutoAim();
-		} else {
-			allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+		// if (controller[okapi::ControllerDigital::down].isPressed()) {
+		// 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
+		// 	stepAutoAim();
+		// } else {
+		// 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 			chassis->getModel()->tank(leftY, rightY);
-		}
+		// }
 		chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
 		rate.delay(100_Hz);
 	}
