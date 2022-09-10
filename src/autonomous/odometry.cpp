@@ -12,7 +12,7 @@ okapi::ADIEncoder RTrackingWheel = okapi::ADIEncoder({2, 0, 0}, false);
 okapi::IMU imu1 = okapi::IMU(9, okapi::IMUAxes::z);
 okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
-okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.028, 0.0, 0.001);
+okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.025, 0.0, 0.001);
 okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(0.55, 0.01, 0.02);
 okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFactory::posPID(0.25, 0.0, 0.0025);
 
@@ -189,7 +189,7 @@ void jCurve(double x, double y, bool forward, double offset, double speedMultipl
     }
 
 
-    chassis->getModel()->tank(modified + chassisPidValue2*0.8*abs(modified), modified - chassisPidValue2*0.8*abs(modified));
+    chassis->getModel()->tank(modified + chassisPidValue2*0.7*abs(modified), modified - chassisPidValue2*0.7*abs(modified));
     // chassis->getModel()->tank(chassisPidValue + chassisPidValue2*0.9, chassisPidValue - chassisPidValue2*0.9);
     rate.delay(100_Hz);
     }

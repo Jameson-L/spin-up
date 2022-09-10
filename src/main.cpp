@@ -49,7 +49,8 @@ void initialize() {
 	pros::c::adi_pin_mode(4, INPUT);
 	pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
-
+	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
+	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
 	// messages
 	// LOG_DEBUG_S("Initializing...");
 	// LOG_DEBUG_S("Initialization Complete.");
@@ -102,14 +103,19 @@ void competition_initialize() {
 void autonomous() {
 	okapi::MotorGroup allMotors({kDriveLIPort, kDriveLOPort, kDriveLBPort, kDriveRBPort, kDriveRIPort, kDriveROPort});
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
-	if (auton == 0) {
-		// right();
-		left();
-	} else if (auton == 1) {
+	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
+	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
+	// if (auton == 0) {
+		right();
+		// left();
+		// awpLeft();
+		// imuTurnToAngle(90);
+		// imuTurnToAngle(-90);
+	// } else if (auton == 1) {
 
-	} else {
+	// } else {
 
-	}
+	// }
 }
 
 /**
@@ -173,6 +179,7 @@ void opcontrol() {
 
 	okapi::MotorGroup allMotors({kDriveLIPort, kDriveLOPort, kDriveLBPort, kDriveRBPort, kDriveRIPort, kDriveROPort});
 	okapi::Rate rate;
+	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 
 	// rate.delay(40_Hz);
 
@@ -200,7 +207,7 @@ void opcontrol() {
 			flywheelToggle = !flywheelToggle;
 		}
 		if (flywheelToggle) {
-			flywheel.controllerSet(1);
+			flywheel.controllerSet(0.9);
 		} else {
 			flywheel.controllerSet(0);
 		}
@@ -238,7 +245,7 @@ void opcontrol() {
 		// 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 			chassis->getModel()->tank(leftY, rightY);
 		// }
-		chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
+		// chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
 		rate.delay(100_Hz);
 	}
 }
