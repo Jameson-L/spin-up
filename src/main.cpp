@@ -207,9 +207,13 @@ void opcontrol() {
 			flywheelToggle = !flywheelToggle;
 		}
 		if (flywheelToggle) {
-			flywheel.controllerSet(0.9);
+			// flywheel.controllerSet(0.8);
+			flywheel.moveVelocity(400);
+			controller.setText(0, 0, "flywheel on ");
 		} else {
-			flywheel.controllerSet(0);
+			// flywheel.controllerSet(0);
+			flywheel.moveVelocity(0);
+			controller.setText(0, 0, "flywheel off ");
 		}
 		if (controller[okapi::ControllerDigital::R2].isPressed()) {
 			pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
