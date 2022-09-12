@@ -12,21 +12,24 @@ kDriveRBPort, kDriveRIPort, kDriveROPort});
 void intakeTask() {
   relative(1.5, 0.2, 2.5);
 }
+void intakeTask2() {
+  relative(1.4, 0.2, 2.5);
+}
 
 void right() {
   relative(1.9, 1);
   imuTurnToAngle(90);
   pros::Task intakeTask1(intakeTask);
-  pros::delay(850);
-  intake.controllerSet(-0.4);
-  flywheel.controllerSet(0.83);
-  pros::delay(610);
+  pros::delay(600);
+  intake.controllerSet(-1);
+  flywheel.controllerSet(0.85);
+  pros::delay(760);
   intake.controllerSet(0);
-  pros::delay(540);
+  pros::delay(640);
   relative(-0.5, 0.7);
   bool thing = chassis->getState().y.convert(okapi::foot) >= 0.3;
   odomDriveToPoint(1.5, -0.3, thing, 0, 0.5, 1);
-  imuTurnToAngle(-91);
+  imuTurnToAngle(-90);
   pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
   pros::delay(500);
   pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
@@ -39,21 +42,22 @@ void right() {
 
 
 void left() {
-  pros::Task intakeTask1(intakeTask);
+  pros::Task intakeTask1(intakeTask2);
   pros::delay(700);
-  flywheel.controllerSet(0.83);
-  intake.controllerSet(-0.4);
+  flywheel.controllerSet(0.9);
+  intake.controllerSet(-1);
   pros::delay(620);
   intake.controllerSet(0);
   pros::delay(680);
   relative(-0.5, 0.7);
   bool thing = chassis->getState().x.convert(okapi::foot) >= 0;
   odomDriveToPoint(0, 0, thing, 0, 0.5, 1);
-  imuTurnToAngle(163.5);
+  imuTurnToAngle(165);
+  pros::delay(300);
   pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
   pros::delay(500);
   pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-  pros::delay(1250);
+  pros::delay(1000);
   pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
   pros::delay(500);
   pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
@@ -62,7 +66,7 @@ void left() {
 
 void awpLeft() {
   left();
-  odomDriveToPoint(-6.52, -7.1, true, 0, 1, 4);
+  odomDriveToPoint(-6.52, -7.35, true, 0, 1, 4);
   imuTurnToAngle(-90);
   pros::Task intakeTask1(intakeTask);
   pros::delay(250);

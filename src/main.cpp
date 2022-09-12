@@ -109,8 +109,6 @@ void autonomous() {
 		right();
 		// left();
 		// awpLeft();
-		// imuTurnToAngle(90);
-		// imuTurnToAngle(-90);
 	// } else if (auton == 1) {
 
 	// } else {
