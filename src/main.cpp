@@ -172,6 +172,7 @@ void opcontrol() {
 	double leftY;
 	double rightY;
 	bool flywheelToggle = false;
+	double targetSpeed = 400;
 
 	// bool reverseDrive = false;
 
@@ -206,7 +207,7 @@ void opcontrol() {
 		}
 		if (flywheelToggle) {
 			// flywheel.controllerSet(0.8);
-			flywheel.moveVelocity(400);
+			flywheel.moveVelocity(targetSpeed * 2 - flywheel.getActualVelocity());
 			controller.setText(0, 0, "flywheel on ");
 		} else {
 			// flywheel.controllerSet(0);
