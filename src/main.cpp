@@ -172,13 +172,14 @@ void opcontrol() {
 	double leftY;
 	double rightY;
 	bool flywheelToggle = false;
-	double targetSpeed = 400;
+	double targetSpeed = 600;
 
 	// bool reverseDrive = false;
 
 	okapi::MotorGroup allMotors({kDriveLIPort, kDriveLOPort, kDriveLBPort, kDriveRBPort, kDriveRIPort, kDriveROPort});
 	okapi::Rate rate;
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+	flywheel.setGearing(okapi::AbstractMotor::gearset::blue);
 
 	// rate.delay(40_Hz);
 
@@ -201,6 +202,7 @@ void opcontrol() {
 		// std::cout << "theta: " << pos.theta.convert(okapi::degree) << ' ';
 		// std::cout<< "imu: " << getHeading() << '\n';
 		// std::cout << allMotors.getEfficiency() << "\n";
+		// std::cout << "real: " << flywheel.getActualVelocity() << " target: " << targetSpeed * 2 - flywheel.getActualVelocity() << "\n";
 
 		if (controller[okapi::ControllerDigital::R1].changedToPressed()) {
 			flywheelToggle = !flywheelToggle;
