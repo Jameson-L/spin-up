@@ -1,32 +1,41 @@
 #pragma once
 #include "main.h"
 
-// variables
-// portNumbers
-
-// odometry chassis declared in chassis.hpp
-
 // IMUs
 extern okapi::IMU imu1;
-extern okapi::IMU imu2;
+extern okapi::IMU imu2; // used in case we want to counter imu drift
 
 // ADI Encoders
-extern okapi::ADIEncoder LTrackingWheel;
-extern okapi::ADIEncoder RTrackingWheel;
-extern okapi::ADIEncoder MTrackingWheel;
+extern okapi::ADIEncoder LTrackingWheel; // left tracking wheel
+extern okapi::ADIEncoder RTrackingWheel; // right tracking wheel
+extern okapi::ADIEncoder MTrackingWheel; // middle trackin wheel
 
 // drive PIDs
-extern okapi::IterativePosPIDController chassisTurnPid;
-extern okapi::IterativePosPIDController chassisDrivePid;
-extern okapi::IterativePosPIDController chasissSwingPid;
+extern okapi::IterativePosPIDController chassisTurnPid; // turning based on imu reading
+extern okapi::IterativePosPIDController chassisDrivePid; // translations
+extern okapi::IterativePosPIDController chasissSwingPid; // turning with only one side of the drivetrain
 
 // functions
-// helper functions
-double getHeading(bool safe = false);
-bool isMoving();
+double getHeading(bool safe = false); // returns current imu reading (-180, 180),
+                                      // safe is used to protect PID from 180 to -180 jump
+bool isMoving(); // if the bot is within a certain RPM threshold it is considered stopped
+
+/*
+general info:
+distances are in ft
+x = forward/backward
+y = left/right
+forward = direction boolean
+offset = shortcut method of tuning an overshoot, rarely used
+speedMultiplier = max speed
+time = max time spent before breaking
+*/
 
 void odomDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
+// in-place turn, then translation to any point
 void jCurve(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
+// curve to any point in a J-shaped path (turn while driving)
 void imuTurnToAngle(double deg);
-void imuZeroToAngle(double deg, double time = 2);
+// turn to any angle
 void relative(double x, double speedMultiplier = 1, double time = 2);
+// translate forward/backward any amount of distance, regardless of position

@@ -1,7 +1,8 @@
 #pragma once
 #include "main.h"
 
-void left();
-void right();
-void awpLeft();
-void awpRight();
+// routes
+void left(); // left side auton
+void right(); // right side auton
+void awpLeft(); // solo win point starting left side
+void awpRight(); // solo win point starting righth side

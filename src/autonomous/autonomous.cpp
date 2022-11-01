@@ -5,14 +5,11 @@
 #include "subsystems/pneumatics.hpp"
 #include "autonomous/autonomous.hpp"
 
-// functions
-okapi::MotorGroup allMotors = okapi::MotorGroup({kDriveLBPort, kDriveLIPort, kDriveLOPort,
-kDriveRBPort, kDriveRIPort, kDriveROPort});
-
-void intakeTask() {
+// task functions for auton
+void intakeTask() { // for rolling while driving forward
   relative(1.5, 0.2, 2.5);
 }
-void intakeTask2() {
+void intakeTask2() { // for rolling while driving forward
   relative(1.4, 0.2, 2.5);
 }
 
@@ -39,7 +36,6 @@ void right() {
   pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
   flywheel.controllerSet(0);
 }
-
 
 void left() {
   pros::Task intakeTask1(intakeTask2);
@@ -74,3 +70,5 @@ void awpLeft() {
   pros::delay(710);
   intake.controllerSet(0);
 }
+
+void awpRight() {}

@@ -1,4 +1,4 @@
 #pragma once
 #include "main.h"
 
-extern okapi::Motor intake;
+extern okapi::Motor intake; // intake motor
