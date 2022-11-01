@@ -172,7 +172,7 @@ void opcontrol() {
 	double leftY;
 	double rightY;
 	bool flywheelToggle = false;
-	double targetSpeed = 600;
+	double targetSpeed = 600 * 38.0/42.0;
 
 	// bool reverseDrive = false;
 
@@ -209,7 +209,12 @@ void opcontrol() {
 		}
 		if (flywheelToggle) {
 			// flywheel.controllerSet(0.8);
-			flywheel.moveVelocity(targetSpeed * 2 - flywheel.getActualVelocity());
+			if (flywheel.getActualVelocity() < targetSpeed) {
+				flywheel.controllerSet(1);
+			} else {
+				flywheel.moveVelocity(targetSpeed);
+			}
+			// flywheel.moveVelocity(targetSpeed * 2 - flywheel.getActualVelocity()); // power correction, makes it target an extra high rpm if too low
 			controller.setText(0, 0, "flywheel on ");
 		} else {
 			// flywheel.controllerSet(0);
