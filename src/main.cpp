@@ -18,7 +18,7 @@ void on_center_button() {
 
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Among."); // sus
+	pros::lcd::set_text(1, "klshshsh"); // sus
 	pros::lcd::register_btn1_cb(on_center_button);
 
 	// setting pin modes and staritng positions
@@ -71,7 +71,7 @@ void opcontrol() {
 	double leftY; // left joystick y direction
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
-	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
+	double targetSpeed = 600 * 38.0/42.0; // target speed of flywheel
 
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
@@ -105,21 +105,11 @@ void opcontrol() {
 		}
 		if (flywheelToggle) {
 			// flywheel.controllerSet(0.8);
-			if (flywheel.getActualVelocity() < targetSpeed-50) {
+			if (flywheel.getActualVelocity() < targetSpeed) {
 				flywheel.controllerSet(1);
 			} else {
 				flywheel.moveVelocity(targetSpeed);
-
-			// 	flywheel.controllerSet(targetSpeed / 600.0);
 			}
-			// double error = targetSpeed - flywheel.getActualVelocity();
-			// if (abs(error) < 10) {
-			// 	error = 0;
-			// }
-			// double power = (targetSpeed / 600.0) + error / 600.0;
-			// flywheel.controllerSet(power);
-			// flywheel.controllerSet(0.5);
-			// std::cout << flywheel.getActualVelocity() << "\n";
 			// flywheel.moveVelocity(targetSpeed * 2 - flywheel.getActualVelocity()); // power correction, makes it target an extra high rpm if too low
 			controller.setText(0, 0, "flywheel on ");
 		} else {

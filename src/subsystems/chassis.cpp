@@ -6,12 +6,12 @@ using namespace okapi::literals;
 
 // defining chassis ports, negative is reversed
 // i is inner, o is outer
-const int8_t kDriveLFPort = -20;
-const int8_t kDriveLMPort = 0;
-const int8_t kDriveLBPort = -15;
-const int8_t kDriveRFPort = 14;
-const int8_t kDriveRMPort = -16;
-const int8_t kDriveRBPort = 2;
+const int8_t kDriveLFPort = -9;
+const int8_t kDriveLMPort = -7;
+const int8_t kDriveLBPort = -1;
+const int8_t kDriveRFPort = -12;
+const int8_t kDriveRMPort = -6;
+const int8_t kDriveRBPort = -2;
 
 // creating chassis object
 std::shared_ptr<okapi::OdomChassisController> chassis = okapi::ChassisControllerBuilder()
