@@ -71,7 +71,7 @@ void opcontrol() {
 	double leftY; // left joystick y direction
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
-	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
+	double targetSpeed = 475; // target speed of flywheel - blue is 600 max
 
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
