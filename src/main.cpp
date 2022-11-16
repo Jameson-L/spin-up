@@ -105,7 +105,7 @@ void opcontrol() {
 		}
 		if (flywheelToggle) {
 			// flywheel.controllerSet(0.8);
-if (flywheel.getActualVelocity() < targetSpeed-50) {
+			if (flywheel.getActualVelocity() < targetSpeed-50) {
 				flywheel.controllerSet(1);
 			} else {
 				flywheel.moveVelocity(targetSpeed);
@@ -130,10 +130,6 @@ if (flywheel.getActualVelocity() < targetSpeed-50) {
 			intake.controllerSet(1);
 		} else if (controller[okapi::ControllerDigital::L2].isPressed()) {
 			intake.controllerSet(-1);
-		} else if (controller[okapi::ControllerDigital::X].isPressed()) {
-			intake.moveVelocity(50);
-		} else if (controller[okapi::ControllerDigital::B].isPressed()) {
-			intake.moveVelocity(-50);
 		} else {
 			intake.controllerSet(0);
 		}
