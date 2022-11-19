@@ -13,8 +13,8 @@ okapi::IMU imu1 = okapi::IMU(5, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
 // pid constants
-okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.027, 0.0, 0.001);
-okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(0.55, 0.01, 0.02);
+okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.025, 0.0, 0.001);
+okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(0.57, 0.01, 0.02);
 okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFactory::posPID(0.25, 0.0, 0.0025);
 
 double getHeading(bool safe) {
@@ -106,7 +106,7 @@ void jCurve(double x, double y, bool forward, double offset, double speedMultipl
 
   double drivePidValue = 0; // drive
   double turnPidValue = 0; // turn
-  double turnStrength = 0.7; // how sharp the turns can be; bigger = turn more
+  double turnStrength = 0.6; // how sharp the turns can be; bigger = turn more
   double dX, dY; // current displacement
   double encoderReading = 1000000000.0; // arbitrarily large starting value so the while loop can start without breaking due to unitialized variable
   double finalDriveValue; // drive value after speed calculations etc.

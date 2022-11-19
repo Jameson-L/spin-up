@@ -38,7 +38,8 @@ void autonomous() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
-	right();
+	// right();
+	left();
 }
 
 // experimental auto aim, does one iteration of a pid loop, embedded into drive code main loop
@@ -73,7 +74,7 @@ void opcontrol() {
 	double leftY; // left joystick y direction
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
-	double targetSpeed = 475; // target speed of flywheel - blue is 600 max
+	double targetSpeed = 430; // target speed of flywheel - blue is 600 max
 
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
