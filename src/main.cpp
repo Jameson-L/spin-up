@@ -38,8 +38,8 @@ void autonomous() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
-	// right();
-	left();
+	right();
+	// left();
 }
 
 // experimental auto aim, does one iteration of a pid loop, embedded into drive code main loop
@@ -140,8 +140,7 @@ void opcontrol() {
 		// expansion piston
 		if (controller[okapi::ControllerDigital::up].isPressed()) {
 			pros::c::adi_digital_write(kPneumaticExpansionPort, HIGH);
-		}
-		if (controller[okapi::ControllerDigital::down].isPressed()){
+		} else {
 			pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
 		}
 
