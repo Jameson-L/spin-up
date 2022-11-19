@@ -19,7 +19,7 @@ std::shared_ptr<okapi::OdomChassisController> chassis = okapi::ChassisController
     {kDriveLFPort, kDriveLMPort, kDriveLBPort},
     {kDriveRFPort, kDriveRMPort, kDriveRBPort}
   )
-  .withDimensions(okapi::AbstractMotor::gearset::blue, okapi::ChassisScales({3.25_in, 10_in}, okapi::imev5GreenTPR * 5./3.)) // driving/driven
+  .withDimensions(okapi::AbstractMotor::gearset::blue, okapi::ChassisScales({3.25_in, 10_in}, okapi::imev5BlueTPR * 5./3.)) // driving/driven
   // .withSensors(LTrackingWheel, RTrackingWheel/*, MTrackingWheel*/)
   .withOdometry(/*{{2.75_in, 6.75_in}, okapi::quadEncoderTPR}*/)
   .buildOdometry();

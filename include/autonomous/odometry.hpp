@@ -39,3 +39,5 @@ void imuTurnToAngle(double deg);
 // turn to any angle
 void relative(double x, double speedMultiplier = 1, double time = 2);
 // translate forward/backward any amount of distance, regardless of position
+void turnToPoint(double x, double y);
+// turn to any angle

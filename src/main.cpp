@@ -35,6 +35,7 @@ void competition_initialize() {}
 
 void autonomous() {
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold); // for tighter movements
+	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
 	right();
@@ -68,6 +69,7 @@ void opcontrol() {
 	okapi::Timer timer; // in case of timer-based functions for match
 	okapi::Rate rate;
 
+	continueFlywheel = false;
 	double leftY; // left joystick y direction
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off

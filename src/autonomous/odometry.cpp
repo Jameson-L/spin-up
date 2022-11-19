@@ -9,11 +9,11 @@ okapi::Rate rate; // for consistent rate of loops
 // okapi::ADIEncoder RTrackingWheel = okapi::ADIEncoder({2, 0, 0}, false);
 // okapi::ADIEncoder MTrackingWheel = okapi::ADIEncoder(0, 0, true);
 
-okapi::IMU imu1 = okapi::IMU(9, okapi::IMUAxes::z);
+okapi::IMU imu1 = okapi::IMU(5, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
 // pid constants
-okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.025, 0.0, 0.001);
+okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.027, 0.0, 0.001);
 okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(0.55, 0.01, 0.02);
 okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFactory::posPID(0.25, 0.0, 0.0025);
 
@@ -235,4 +235,19 @@ void relative(double x, double speedMultiplier, double time) {
 
   chassisDrivePid.reset();
   chassis->getModel()->tank(0, 0);
+}
+
+void turnToPoint(double x, double y) {
+  // initial in-place turn:
+  x -= chassis->getState().x.convert(okapi::foot); // getting target displacement x
+  y -= chassis->getState().y.convert(okapi::foot); // getting target displacement y
+
+  double angle = atan(y / x) * 180 / M_PI; // absolute angle needed to turn
+  if (x < 0 && y > 0) {
+    angle += 180;
+  } else if (x < 0 && y < 0) {
+    angle -= 180;
+  }
+
+  imuTurnToAngle(angle);
 }

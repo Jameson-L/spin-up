@@ -1,6 +1,10 @@
 #pragma once
 #include "main.h"
 
+extern bool continueFlywheel;
+extern double speed;
+void flywheelTask();
+
 // routes
 void left(); // left side auton
 void right(); // right side auton
