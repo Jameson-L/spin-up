@@ -87,10 +87,11 @@ void opcontrol() {
 					holdDrive = false;
 					controller.setText(1, 0, "coast");
 				}
-				if (controller.getAnalog(okapi::ControllerAnalog::leftX) == 1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == -1) {
-					holdDrive = true;
-					controller.setText(1, 0, "hold ");
-				}
+		if (controller.getAnalog(okapi::ControllerAnalog::leftX) == 1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == -1) {
+			holdDrive = true;
+			controller.setText(1, 0, "hold ");
+		}
+		
 		// flywheel toggling
 		if (controller[okapi::ControllerDigital::R1].changedToPressed()) {
 			flywheelToggle = !flywheelToggle;
