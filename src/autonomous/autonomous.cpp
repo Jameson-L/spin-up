@@ -11,12 +11,14 @@ double speed = 0;
 // task functions for auton
 void flywheelTask() {
   continueFlywheel = true;
+  okapi::Rate rate;
   while (continueFlywheel) {
     if (flywheel.getActualVelocity() < speed-50) {
       flywheel.controllerSet(1);
     } else {
       flywheel.moveVelocity(speed);
     }
+    rate.delay(40_Hz);
   }
   flywheel.controllerSet(0);
 }
@@ -26,13 +28,14 @@ void roller() {
 }
 
 void right() {
-  speed = 565;
-  pros::Task startFlywheel(flywheelTask);
+  // speed = 350;
+  // pros::Task startFlywheel(flywheelTask);
+  flywheel.controllerSet(0.85);
   intake.controllerSet(1);
   jCurve(1.7, 0, true, 0, 1, 2);
-  turnToPoint(10.3, 2.9);
-  relative(5, 1, 0.3);
-  turnToPoint(10.3, 2.9);
+  turnToPoint(10.3, 2.3);
+  relative(5, 1, 0.2);
+  turnToPoint(10.3, 2.3);
   pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
   pros::delay(300);
   pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
@@ -45,14 +48,15 @@ void right() {
   pros::delay(300);
   pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
   intake.controllerSet(0);
+  flywheel.controllerSet(0);
   relative(-5, 1, 0.3);
   continueFlywheel = false;
-  odomDriveToPoint(0.8, 2.5, false, 0, 1, 1.8);
+  odomDriveToPoint(0.5, 2.3, false, 0, 1, 1.8);
   imuTurnToAngle(0);
   pros::Task rollerTask(roller);
   pros::delay(750);
   intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-  intake.moveRelative(-300, 600);
+  intake.moveRelative(300, 600);
 }
 
 void leftOld() {
@@ -83,7 +87,7 @@ void leftOld() {
   pros::Task rollerTask(roller);
   pros::delay(750);
   intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-  intake.moveRelative(-300, 600);
+  intake.moveRelative(300, 600);
 }
 
 void left() {
@@ -114,7 +118,7 @@ void left() {
   pros::Task rollerTask(roller);
   pros::delay(750);
   intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-  intake.moveRelative(-300, 600);
+  intake.moveRelative(300, 600);
 }
 
 void awp();

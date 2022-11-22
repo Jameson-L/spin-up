@@ -9,13 +9,20 @@ okapi::Rate rate; // for consistent rate of loops
 // okapi::ADIEncoder RTrackingWheel = okapi::ADIEncoder({2, 0, 0}, false);
 // okapi::ADIEncoder MTrackingWheel = okapi::ADIEncoder(0, 0, true);
 
-okapi::IMU imu1 = okapi::IMU(5, okapi::IMUAxes::z);
+okapi::IMU imu1 = okapi::IMU(8, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
+
+// vision for auto aim
+pros::Vision vision(0, pros::E_VISION_ZERO_CENTER);
+pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 1453, 1881, 1667, -4979, -4407, -4693, 3.000, 0);
+pros::vision_signature_s_t red = pros::Vision::signature_from_utility(1, 1453, 1881, 1667, -4979, -4407, -4693, 3.000, 0);
 
 // pid constants
 okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.025, 0.0, 0.001);
 okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(0.57, 0.01, 0.02);
 okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFactory::posPID(0.25, 0.0, 0.0025);
+okapi::IterativePosPIDController chassisVisionPid = okapi::IterativeControllerFactory::posPID(0.005, 0.0, 0.0);
+
 
 double getHeading(bool safe) {
   if (!safe) {
@@ -48,7 +55,7 @@ void imuTurnToAngle(double deg) {
   double init = timer.millis().convert(okapi::second); // saving initial time to calculate time elapsed
 
   while (!(abs(deg - getHeading(safe)) < 4 && !isMoving())) { // if close enough and stopped moving
-    if (timer.millis().convert(okapi::second) - init > 2) {
+    if (timer.millis().convert(okapi::second) - init > 1) {
       break; // break if too long
     }
 
@@ -250,4 +257,41 @@ void turnToPoint(double x, double y) {
   }
 
   imuTurnToAngle(angle);
+}
+
+
+bool hasObject() {
+  return vision.get_object_count() > 0 && vision.get_object_count() < 5;
+}
+
+void stepAutoAim() {
+  okapi::MedianFilter<5> visionFilter;
+  vision.set_signature(1, &blue);
+  if (hasObject()) {
+    chassisVisionPid.setTarget(0);
+    double chassisPidValue;
+
+    chassisPidValue = chassisVisionPid.step(visionFilter.filter(vision.get_by_size(0).x_middle_coord));
+
+    if (vision.get_object_count() == 0 || abs(chassisPidValue) < 0.08) {
+      chassis->getModel()->tank(0, 0);
+    } else if (vision.get_object_count() > 0) {
+      chassis->getModel()->tank(-1 * chassisPidValue, chassisPidValue);
+    }
+  } else {
+    vision.set_signature(1, &red);
+    if (hasObject()) {
+      chassisVisionPid.setTarget(0);
+      double chassisPidValue;
+
+      chassisPidValue = chassisVisionPid.step(visionFilter.filter(vision.get_by_size(0).x_middle_coord));
+
+      if (vision.get_object_count() == 0 || abs(chassisPidValue) < 0.08) {
+        chassis->getModel()->tank(0, 0);
+      } else if (vision.get_object_count() > 0) {
+        chassis->getModel()->tank(-1 * chassisPidValue, chassisPidValue);
+      }
+    }
+  }
+  chassis->getModel()->tank(0, 0);
 }
