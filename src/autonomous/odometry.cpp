@@ -26,7 +26,11 @@ okapi::IterativePosPIDController chassisVisionPid = okapi::IterativeControllerFa
 
 double getHeading(bool safe) {
   if (!safe) {
-    return (imu1.controllerGet() + imu1.controllerGet()) / 2.0; // average of the two, but only using one for now
+    if (!(imu1.controllerGet() < 180 && imu1.controllerGet() > -180)) { // checking if its numerical; if not, imu is unplugged
+      return chassis->getState().theta.convert(okapi::degree);
+    } else {
+      return (imu1.controllerGet() + imu1.controllerGet()) / 2.0; // average of the two, but only using one for now
+    }
   } else {
     return std::fmod((getHeading(false) + 360), 360); // mapping the readings to a safer interval
   }
