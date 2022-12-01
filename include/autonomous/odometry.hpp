@@ -9,6 +9,8 @@ extern pros::Vision vision;
 extern pros::vision_signature_s_t blue;
 extern pros::vision_signature_s_t red;
 
+extern okapi::OpticalSensor optical;
+
 // ADI Encoders
 extern okapi::ADIEncoder LTrackingWheel; // left tracking wheel
 extern okapi::ADIEncoder RTrackingWheel; // right tracking wheel
@@ -24,6 +26,9 @@ extern okapi::IterativePosPIDController chassisVisionPid; // for auto aim
 double getHeading(bool safe = false); // returns current imu reading (-180, 180),
                                       // safe is used to protect PID from 180 to -180 jump
 bool isMoving(); // if the bot is within a certain RPM threshold it is considered stopped
+
+bool isRed();
+bool isBlue();
 
 /*
 general info:

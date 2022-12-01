@@ -76,7 +76,13 @@ void opcontrol() {
 		// std::cout << "x-pos: " << pos.x.convert(okapi::foot) << '\n';
 		// std::cout << "y-pos: " << pos.y.convert(okapi::foot) << '\n';
 		// std::cout << "theta: " << pos.theta.convert(okapi::degree) << ' ';
-
+		if (isBlue()) {
+			std::cout << "blue" << "\n";
+		}
+		if (isRed()) {
+			std::cout << "red" << "\n";
+		}
+		
 		// other debugging:
 		// std::cout<< "imu: " << getHeading() << '\n';
 		// std::cout << allMotors.getEfficiency() << "\n";
@@ -91,7 +97,7 @@ void opcontrol() {
 			holdDrive = true;
 			controller.setText(1, 0, "hold ");
 		}
-		
+
 		// flywheel toggling
 		if (controller[okapi::ControllerDigital::R1].changedToPressed()) {
 			flywheelToggle = !flywheelToggle;

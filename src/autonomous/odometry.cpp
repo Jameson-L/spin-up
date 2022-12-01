@@ -12,6 +12,8 @@ okapi::Rate rate; // for consistent rate of loops
 okapi::IMU imu1 = okapi::IMU(8, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
+okapi::OpticalSensor optical(12);
+
 // vision for auto aim
 pros::Vision vision(0, pros::E_VISION_ZERO_CENTER);
 pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 1453, 1881, 1667, -4979, -4407, -4693, 3.000, 0);
@@ -26,7 +28,7 @@ okapi::IterativePosPIDController chassisVisionPid = okapi::IterativeControllerFa
 
 double getHeading(bool safe) {
   if (!safe) {
-    if (!(imu1.controllerGet() < 180 && imu1.controllerGet() > -180)) { // checking if its numerical; if not, imu is unplugged
+    if (!(imu1.controllerGet() <= 180 && imu1.controllerGet() >= -180)) { // checking if its numerical; if not, imu is unplugged
       return chassis->getState().theta.convert(okapi::degree);
     } else {
       return (imu1.controllerGet() + imu1.controllerGet()) / 2.0; // average of the two, but only using one for now
@@ -45,6 +47,13 @@ bool isMoving() {
   abs(okapi::Motor(kDriveRFPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRMPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 10;
+}
+
+bool isRed() {
+  return optical.getHue() < 12 && optical.getHue() > 0;
+}
+bool isBlue() {
+  return optical.getHue() < 230 && optical.getHue() > 210;
 }
 
 void imuTurnToAngle(double deg) {

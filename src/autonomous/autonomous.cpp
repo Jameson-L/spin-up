@@ -121,4 +121,4 @@ void left() {
   intake.moveRelative(300, 600);
 }
 
-void awp();
+void awp() {}
