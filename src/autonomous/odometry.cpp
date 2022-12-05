@@ -12,12 +12,12 @@ okapi::Rate rate; // for consistent rate of loops
 okapi::IMU imu1 = okapi::IMU(8, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
-okapi::OpticalSensor optical(12);
+okapi::OpticalSensor optical(0);
 
 // vision for auto aim
-pros::Vision vision(0, pros::E_VISION_ZERO_CENTER);
-pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 1453, 1881, 1667, -4979, -4407, -4693, 3.000, 0);
-pros::vision_signature_s_t red = pros::Vision::signature_from_utility(1, 1453, 1881, 1667, -4979, -4407, -4693, 3.000, 0);
+pros::Vision vision(12, pros::E_VISION_ZERO_CENTER);
+pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 3811, 6313, 5062, -3295, 1, -1647, 3.400, 0);
+pros::vision_signature_s_t red = pros::Vision::signature_from_utility(2, -3401, -2543, -2972, 13963, 16385, 15174, 11.000, 0);
 
 // pid constants
 okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.025, 0.0, 0.001);
@@ -278,33 +278,33 @@ bool hasObject() {
 }
 
 void stepAutoAim() {
-  okapi::MedianFilter<5> visionFilter;
-  vision.set_signature(1, &blue);
+  okapi::MedianFilter<40> visionFilter;
+  // vision.set_signature(1, &blue);
   if (hasObject()) {
     chassisVisionPid.setTarget(0);
     double chassisPidValue;
 
     chassisPidValue = chassisVisionPid.step(visionFilter.filter(vision.get_by_size(0).x_middle_coord));
 
-    if (vision.get_object_count() == 0 || abs(chassisPidValue) < 0.08) {
+    if (vision.get_object_count() == 0) {
       chassis->getModel()->tank(0, 0);
     } else if (vision.get_object_count() > 0) {
       chassis->getModel()->tank(-1 * chassisPidValue, chassisPidValue);
     }
-  } else {
-    vision.set_signature(1, &red);
-    if (hasObject()) {
-      chassisVisionPid.setTarget(0);
-      double chassisPidValue;
-
-      chassisPidValue = chassisVisionPid.step(visionFilter.filter(vision.get_by_size(0).x_middle_coord));
-
-      if (vision.get_object_count() == 0 || abs(chassisPidValue) < 0.08) {
-        chassis->getModel()->tank(0, 0);
-      } else if (vision.get_object_count() > 0) {
-        chassis->getModel()->tank(-1 * chassisPidValue, chassisPidValue);
-      }
-    }
-  }
+  }// else {
+  //   vision.set_signature(1, &red);
+  //   if (hasObject()) {
+  //     chassisVisionPid.setTarget(0);
+  //     double chassisPidValue;
+  //
+  //     chassisPidValue = chassisVisionPid.step(visionFilter.filter(vision.get_by_size(0).x_middle_coord));
+  //
+  //     if (vision.get_object_count() == 0 || abs(chassisPidValue) < 0.08) {
+  //       chassis->getModel()->tank(0, 0);
+  //     } else if (vision.get_object_count() > 0) {
+  //       chassis->getModel()->tank(-1 * chassisPidValue, chassisPidValue);
+  //     }
+  //   }
+  // }
   chassis->getModel()->tank(0, 0);
 }

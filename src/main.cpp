@@ -26,6 +26,8 @@ void initialize() {
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
+	vision.set_signature(1, &blue);
+	vision.set_signature(2, &red);
 
 	// for proper rpm control
 	flywheel.setGearing(okapi::AbstractMotor::gearset::blue);
@@ -62,6 +64,7 @@ void opcontrol() {
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+	// okapi::MedianFilter<40> filter; // 40 is good, higher number = less noise but slower
 
 	// main loop:
 	while (true) {
@@ -76,13 +79,16 @@ void opcontrol() {
 		// std::cout << "x-pos: " << pos.x.convert(okapi::foot) << '\n';
 		// std::cout << "y-pos: " << pos.y.convert(okapi::foot) << '\n';
 		// std::cout << "theta: " << pos.theta.convert(okapi::degree) << ' ';
-		if (isBlue()) {
-			std::cout << "blue" << "\n";
-		}
-		if (isRed()) {
-			std::cout << "red" << "\n";
-		}
-		
+		// if (isBlue()) {
+		// 	std::cout << "blue" << "\n";
+		// }
+		// if (isRed()) {
+		// 	std::cout << "red" << "\n";
+		// }
+		//
+		// vision.set_signature(1, &blue);
+		// vision.set_signature(2, &red);
+	  // std::cout << filter.filter(vision.get_by_size(0).x_middle_coord) << "\n";
 		// other debugging:
 		// std::cout<< "imu: " << getHeading() << '\n';
 		// std::cout << allMotors.getEfficiency() << "\n";
