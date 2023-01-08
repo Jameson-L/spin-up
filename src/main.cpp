@@ -18,7 +18,7 @@ void on_center_button() {
 
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "klshshsh"); // sus
+	pros::lcd::set_text(1, "Among."); // sus
 	pros::lcd::register_btn1_cb(on_center_button);
 
 	// setting pin modes and starting positions
@@ -42,8 +42,13 @@ void autonomous() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
-	right();
+	// right();
 	// left();
+	imuTurnToAngle(90);
+	imuTurnToAngle(45);
+	imuTurnToAngle(135);
+	imuTurnToAngle(-135);
+	imuTurnToAngle(0);
 }
 
 void opcontrol() {
@@ -57,7 +62,7 @@ void opcontrol() {
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
 	bool expandToggle = false; // false = off
-	double targetSpeed = 455; // target speed of flywheel - blue is 600 max
+	double targetSpeed = 600; // target speed of flywheel - blue is 600 max
 	bool holdDrive = false;
 	chassisVisionPid.reset();
 
@@ -70,9 +75,11 @@ void opcontrol() {
 	while (true) {
 
 		// printing odometry tests:
-		// okapi::OdomState pos = chassis->getState();
-		// pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
-		// pros::lcd::set_text(2, std::to_string(pos.y.convert(okapi::foot)));
+		okapi::OdomState pos = chassis->getState();
+		pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
+		pros::lcd::set_text(2, std::to_string(pos.y.convert(okapi::foot)));
+		pros::lcd::set_text(3, std::to_string(getHeading(false)));
+		pros::lcd::set_text(4, std::to_string(pos.theta.convert(okapi::degree)));
 		// std::cout << "left: " << LTrackingWheel.controllerGet() << '\n';
 		// std::cout << "right: " << RTrackingWheel.controllerGet() << '\n';
 		// std::cout << "middle: " << MTrackingWheel.controllerGet() << '\n';

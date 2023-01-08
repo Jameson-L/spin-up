@@ -9,7 +9,7 @@ okapi::Rate rate; // for consistent rate of loops
 // okapi::ADIEncoder RTrackingWheel = okapi::ADIEncoder({2, 0, 0}, false);
 // okapi::ADIEncoder MTrackingWheel = okapi::ADIEncoder(0, 0, true);
 
-okapi::IMU imu1 = okapi::IMU(8, okapi::IMUAxes::z);
+okapi::IMU imu1 = okapi::IMU(18, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
 okapi::OpticalSensor optical(0);
@@ -20,7 +20,7 @@ pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 3811, 
 pros::vision_signature_s_t red = pros::Vision::signature_from_utility(2, -3401, -2543, -2972, 13963, 16385, 15174, 11.000, 0);
 
 // pid constants
-okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.025, 0.0, 0.001);
+okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.018, 0.0, 0.000567);
 okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(0.57, 0.01, 0.02);
 okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFactory::posPID(0.25, 0.0, 0.0025);
 okapi::IterativePosPIDController chassisVisionPid = okapi::IterativeControllerFactory::posPID(0.005, 0.0, 0.0);
@@ -29,7 +29,12 @@ okapi::IterativePosPIDController chassisVisionPid = okapi::IterativeControllerFa
 double getHeading(bool safe) {
   if (!safe) {
     if (!(imu1.controllerGet() <= 180 && imu1.controllerGet() >= -180)) { // checking if its numerical; if not, imu is unplugged
-      return chassis->getState().theta.convert(okapi::degree);
+      int temp = std::fmod(chassis->getState().theta.convert(okapi::degree), 360);
+      if (temp < -180) {
+        return temp + 360;
+      } else {
+        return temp - 360;
+      }
     } else {
       return (imu1.controllerGet() + imu1.controllerGet()) / 2.0; // average of the two, but only using one for now
     }
