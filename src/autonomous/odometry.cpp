@@ -32,9 +32,10 @@ double getHeading(bool safe) {
       int temp = std::fmod(chassis->getState().theta.convert(okapi::degree), 360);
       if (temp < -180) {
         return temp + 360;
-      } else {
+      } else if (temp > 180) {
         return temp - 360;
       }
+      return temp;
     } else {
       return (imu1.controllerGet() + imu1.controllerGet()) / 2.0; // average of the two, but only using one for now
     }
