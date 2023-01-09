@@ -21,7 +21,7 @@ pros::vision_signature_s_t red = pros::Vision::signature_from_utility(2, -3401, 
 
 // pid constants
 okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.018, 0.0, 0.000567);
-okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(0.57, 0.01, 0.02);
+okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(2.5, 0.00, 0.03); // 0.57, 0.01, 0.02; // p 3 works too
 okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFactory::posPID(0.25, 0.0, 0.0025);
 okapi::IterativePosPIDController chassisVisionPid = okapi::IterativeControllerFactory::posPID(0.005, 0.0, 0.0);
 
@@ -235,6 +235,7 @@ void relative(double x, double speedMultiplier, double time) {
     chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
     dX = chassis->getState().x.convert(okapi::foot) - startX;
     dY = chassis->getState().y.convert(okapi::foot) - startY;
+    std::cout << chassis->getState().x.convert(okapi::foot) << "\n";
     encoderReading = sqrt(powf(dX, 2) + powf(dY, 2)); // displacement hypotenuse
     if (x < 0) {
       encoderReading *= -1;

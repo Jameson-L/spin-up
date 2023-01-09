@@ -6,6 +6,8 @@
 #include "subsystems/pneumatics.hpp"
 #include "autonomous/autonomous.hpp"
 
+#include <iostream>
+
 void on_center_button() {
 	static bool pressed = false;
 	pressed = !pressed;
@@ -43,12 +45,8 @@ void autonomous() {
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
 	// right();
+	relative(2);
 	// left();
-	imuTurnToAngle(90);
-	imuTurnToAngle(45);
-	imuTurnToAngle(135);
-	imuTurnToAngle(-135);
-	imuTurnToAngle(0);
 }
 
 void opcontrol() {
@@ -62,14 +60,24 @@ void opcontrol() {
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
 	bool expandToggle = false; // false = off
-	double targetSpeed = 600; // target speed of flywheel - blue is 600 max
+	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
 	bool holdDrive = false;
+	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
 	chassisVisionPid.reset();
 
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	// okapi::MedianFilter<40> filter; // 40 is good, higher number = less noise but slower
+
+	intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
+
+	okapi::Motor LF = okapi::Motor(kDriveLFPort);
+	okapi::Motor LM = okapi::Motor(kDriveLMPort);
+	okapi::Motor LB = okapi::Motor(kDriveLBPort);
+	okapi::Motor RF = okapi::Motor(kDriveRFPort);
+	okapi::Motor RM = okapi::Motor(kDriveRMPort);
+	okapi::Motor RB = okapi::Motor(kDriveRBPort);
 
 	// main loop:
 	while (true) {
@@ -78,8 +86,18 @@ void opcontrol() {
 		okapi::OdomState pos = chassis->getState();
 		pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
 		pros::lcd::set_text(2, std::to_string(pos.y.convert(okapi::foot)));
-		pros::lcd::set_text(3, std::to_string(getHeading(false)));
-		pros::lcd::set_text(4, std::to_string(pos.theta.convert(okapi::degree)));
+		// pros::lcd::set_text(3, std::to_string(getHeading(false)));
+		// pros::lcd::set_text(4, std::to_string(pos.theta.convert(okapi::degree)));
+
+/*
+		pros::lcd::set_text(1, std::to_string(LF.getPosition()));
+		pros::lcd::set_text(2, std::to_string(LM.getPosition()));
+		pros::lcd::set_text(3, std::to_string(LB.getPosition()));
+		pros::lcd::set_text(4, std::to_string(RF.getPosition()));
+		pros::lcd::set_text(5, std::to_string(RM.getPosition()));
+		pros::lcd::set_text(6, std::to_string(RB.getPosition()));
+		*/
+
 		// std::cout << "left: " << LTrackingWheel.controllerGet() << '\n';
 		// std::cout << "right: " << RTrackingWheel.controllerGet() << '\n';
 		// std::cout << "middle: " << MTrackingWheel.controllerGet() << '\n';
@@ -117,7 +135,7 @@ void opcontrol() {
 		}
 		if (flywheelToggle) {
 			// flywheel.controllerSet(0.8);
-			if (flywheel.getActualVelocity() < targetSpeed-50) {
+			if (flywheel.getActualVelocity() < targetSpeed-30) {
 				flywheel.controllerSet(1);
 			} else {
 				flywheel.moveVelocity(targetSpeed);
@@ -139,12 +157,24 @@ void opcontrol() {
 
 		// intake or roller (hold to use)
 		if (controller[okapi::ControllerDigital::L1].isPressed()) {
+			hold = false;
 			intake.controllerSet(1);
 		} else if (controller[okapi::ControllerDigital::R2].isPressed()) {
+			hold = false;
 			intake.controllerSet(-1);
-		} else {
+		} else if (!hold) {
 			intake.controllerSet(0);
 		}
+
+		if (controller[okapi::ControllerDigital::L2].changedToPressed()) {
+			hold = true;
+			intake.moveRelative(-100, 600);
+		}
+		if (!controller[okapi::ControllerDigital::L2].isPressed()) {
+			hold = false;
+		}
+
+
 
 		// expansion piston
 		if (controller[okapi::ControllerDigital::up].changedToPressed()) {
@@ -161,7 +191,7 @@ void opcontrol() {
 		leftY = controller.getAnalog(okapi::ControllerAnalog::leftY);
 		rightY = controller.getAnalog(okapi::ControllerAnalog::rightY);
 
-		if (controller[okapi::ControllerDigital::L2].isPressed()) {
+		if (controller[okapi::ControllerDigital::A].isPressed()) {
 			allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
 			stepAutoAim();
 		} else {
