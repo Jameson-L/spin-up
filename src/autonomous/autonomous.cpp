@@ -12,15 +12,37 @@ double speed = 0;
 void flywheelTask() {
   continueFlywheel = true;
   okapi::Rate rate;
+  // while (continueFlywheel) {
+  //   if (flywheel.getActualVelocity() < speed-50) {
+  //     flywheel.controllerSet(1);
+  //   } else {
+  //     flywheel.moveVelocity(speed);
+  //   }
+  //   rate.delay(40_Hz);
+  // }
+  // flywheel.controllerSet(0);
+
+  double error;
+	double prevError;
+	double output = 0;
+	double tbh = speed / 600.0; // maybe tune this, unlikely
+	double tbhGain = 0.001; // tune this
+
   while (continueFlywheel) {
-    if (flywheel.getActualVelocity() < speed-50) {
+    error = speed - flywheel.getActualVelocity();
+    output += tbhGain * error;
+    if (signbit(error) != signbit(prevError)) {
+      output = 0.5 * (output + tbh);
+      tbh = output;
+      prevError = error;
+    }
+    if (flywheel.getActualVelocity() < speed - 100) {
       flywheel.controllerSet(1);
     } else {
-      flywheel.moveVelocity(speed);
+      flywheel.controllerSet(output);
     }
     rate.delay(40_Hz);
   }
-  flywheel.controllerSet(0);
 }
 
 void roller() {

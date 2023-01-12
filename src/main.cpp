@@ -64,7 +64,11 @@ void opcontrol() {
 	bool holdDrive = false;
 	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
 	chassisVisionPid.reset();
-
+	double error;
+	double prevError;
+	double output = 0;
+	double tbh = targetSpeed / 600.0; // maybe tune this, unlikely
+	
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
@@ -72,12 +76,12 @@ void opcontrol() {
 
 	intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
 
-	okapi::Motor LF = okapi::Motor(kDriveLFPort);
-	okapi::Motor LM = okapi::Motor(kDriveLMPort);
-	okapi::Motor LB = okapi::Motor(kDriveLBPort);
-	okapi::Motor RF = okapi::Motor(kDriveRFPort);
-	okapi::Motor RM = okapi::Motor(kDriveRMPort);
-	okapi::Motor RB = okapi::Motor(kDriveRBPort);
+	// okapi::Motor LF = okapi::Motor(kDriveLFPort);
+	// okapi::Motor LM = okapi::Motor(kDriveLMPort);
+	// okapi::Motor LB = okapi::Motor(kDriveLBPort);
+	// okapi::Motor RF = okapi::Motor(kDriveRFPort);
+	// okapi::Motor RM = okapi::Motor(kDriveRMPort);
+	// okapi::Motor RB = okapi::Motor(kDriveRBPort);
 
 	// main loop:
 	while (true) {
@@ -134,13 +138,28 @@ void opcontrol() {
 			flywheelToggle = !flywheelToggle;
 		}
 		if (flywheelToggle) {
-			// flywheel.controllerSet(0.8);
-			if (flywheel.getActualVelocity() < targetSpeed-30) {
-				flywheel.controllerSet(1);
-			} else {
-				flywheel.moveVelocity(targetSpeed);
+			// // flywheel.controllerSet(0.8);
+			// if (flywheel.getActualVelocity() < targetSpeed-30) {
+			// 	flywheel.controllerSet(1);
+			// } else {
+			// 	flywheel.moveVelocity(targetSpeed);
+			// }
+			// // flywheel.moveVelocity(targetSpeed * 2 - flywheel.getActualVelocity()); // power correction, makes it target an extra high rpm if too low
+
+			error = targetSpeed - flywheel.getActualVelocity();
+			output += tbhGain * error;
+			if (signbit(error) != signbit(prevError)) {
+				output = 0.5 * (output + tbh);
+				tbh = output;
+				prevError = error;
 			}
-			// flywheel.moveVelocity(targetSpeed * 2 - flywheel.getActualVelocity()); // power correction, makes it target an extra high rpm if too low
+
+			if (flywheel.getActualVelocity() < speed - 100) {
+	      flywheel.controllerSet(1);
+	    } else {
+	      flywheel.controllerSet(output);
+	    }
+
 			controller.setText(0, 0, "flywheel on ");
 		} else {
 			// flywheel.controllerSet(0);
