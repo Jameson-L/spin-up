@@ -33,6 +33,8 @@ void initialize() {
 
 	// for proper rpm control
 	flywheel.setGearing(okapi::AbstractMotor::gearset::blue);
+
+	intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
 }
 
 void disabled() {}
@@ -44,8 +46,7 @@ void autonomous() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
-	// right();
-	relative(2);
+	right();
 	// left();
 }
 
@@ -68,13 +69,11 @@ void opcontrol() {
 	double prevError;
 	double output = 0;
 	double tbh = targetSpeed / 600.0; // maybe tune this, unlikely
-	
+
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	// okapi::MedianFilter<40> filter; // 40 is good, higher number = less noise but slower
-
-	intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
 
 	// okapi::Motor LF = okapi::Motor(kDriveLFPort);
 	// okapi::Motor LM = okapi::Motor(kDriveLMPort);

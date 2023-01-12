@@ -7,7 +7,6 @@ void flywheelTask();
 extern double tbhGain;
 
 // routes
-void leftOld(); // left side auton
-void left();
+void left(); // left side auton
 void right(); // right side auton
 void awp(); // solo win point

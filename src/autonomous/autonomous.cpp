@@ -46,70 +46,40 @@ void flywheelTask() {
 }
 
 void roller() {
-  relative(-2, 0.5, 2);
+  relative(-2, 0.75, 2);
 }
 
 void right() {
-  // speed = 350;
-  // pros::Task startFlywheel(flywheelTask);
-  flywheel.controllerSet(0.85);
-  intake.controllerSet(1);
-  jCurve(1.7, 0, true, 0, 1, 2);
-  turnToPoint(10.3, 2.3);
-  relative(5, 1, 0.2);
-  turnToPoint(10.3, 2.3);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
-  pros::delay(300);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-  pros::delay(1600);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
-  pros::delay(300);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-  pros::delay(1600);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
-  pros::delay(300);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-  intake.controllerSet(0);
-  flywheel.controllerSet(0);
-  relative(-5, 1, 0.3);
-  continueFlywheel = false;
-  odomDriveToPoint(0.5, 2.3, false, 0, 1, 1.8);
-  imuTurnToAngle(0);
-  pros::Task rollerTask(roller);
-  pros::delay(750);
-  intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-  intake.moveRelative(300, 600);
-}
-
-void leftOld() {
-  speed = 650;
+  speed = 550;
   pros::Task startFlywheel(flywheelTask);
-  intake.controllerSet(1);
-  jCurve(1, -0.8, true, 0, 0.6, 1.5);
-  turnToPoint(8, -3.5);
-  relative(-1.4, 1, 1);
-  relative(5, 1, 0.3);
-  turnToPoint(8, -3.5);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
-  pros::delay(300);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-  pros::delay(1600);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
-  pros::delay(300);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-  pros::delay(1600);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
-  pros::delay(300);
-  pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-  intake.controllerSet(0);
-  // relative(-5, 1, 0.3);
-  continueFlywheel = false;
-  odomDriveToPoint(-0.4, -0.8, false, 0, 1, 1.8);
+  jCurve(2, 0, true, 0, 1, 1);
   imuTurnToAngle(0);
-  pros::Task rollerTask(roller);
   pros::delay(750);
-  intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-  intake.moveRelative(300, 600);
+  intake.moveRelative(200, 600);
+  jCurve(2, -0.5);
+  imuTurnToAngle(-45);
+  intake.controllerSet(1);
+  relative(1, 0.7, 0.7);
+  jCurve(0.5, -0.5, false, 0, 1, 1);
+  imuTurnToAngle(-70);
+  intake.controllerSet(0);
+  intake.moveRelative(-100, 600);
+  pros::delay(750);
+  intake.moveRelative(-100, 600);
+  pros::delay(750);
+  intake.moveRelative(-100, 600);
+  pros::delay(500);
+  intake.controllerSet(1);
+  odomDriveToPoint(-4, -4, true, 0, 0.8, 2.5); // 4 feet back, 4 feet left, forward, no offset, maxSpeed, time limit
+  relative(-2, 1, 0.7);
+  imuTurnToAngle(-45);
+  intake.controllerSet(0);
+  intake.moveRelative(-100, 600);
+  pros::delay(750);
+  intake.moveRelative(-100, 600);
+  pros::delay(750);
+  intake.moveRelative(-100, 600);
+  flywheel.controllerSet(0);
 }
 
 void left() {
