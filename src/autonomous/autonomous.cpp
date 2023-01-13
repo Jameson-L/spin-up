@@ -7,6 +7,8 @@
 
 bool continueFlywheel = false;
 double speed = 0;
+double tbhGain = 0.0007; // tune this
+
 
 // task functions for auton
 void flywheelTask() {
@@ -26,7 +28,6 @@ void flywheelTask() {
 	double prevError;
 	double output = 0;
 	double tbh = speed / 600.0; // maybe tune this, unlikely
-	double tbhGain = 0.001; // tune this
 
   while (continueFlywheel) {
     error = speed - flywheel.getActualVelocity();

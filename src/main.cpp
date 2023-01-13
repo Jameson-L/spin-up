@@ -66,7 +66,7 @@ void opcontrol() {
 	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
 	chassisVisionPid.reset();
 	double error;
-	double prevError;
+	double prevError = 1;
 	double output = 0;
 	double tbh = targetSpeed / 600.0; // maybe tune this, unlikely
 
@@ -136,6 +136,9 @@ void opcontrol() {
 		if (controller[okapi::ControllerDigital::R1].changedToPressed()) {
 			flywheelToggle = !flywheelToggle;
 		}
+		
+		
+		
 		if (flywheelToggle) {
 			// // flywheel.controllerSet(0.8);
 			// if (flywheel.getActualVelocity() < targetSpeed-30) {
@@ -153,7 +156,7 @@ void opcontrol() {
 				prevError = error;
 			}
 
-			if (flywheel.getActualVelocity() < speed - 100) {
+			if (flywheel.getActualVelocity() < speed - 40) {
 	      flywheel.controllerSet(1);
 	    } else {
 	      flywheel.controllerSet(output);
@@ -162,6 +165,9 @@ void opcontrol() {
 			controller.setText(0, 0, "flywheel on ");
 		} else {
 			// flywheel.controllerSet(0);
+			output =0;
+			tbh = targetSpeed/600.0;
+			prevError =1;
 			flywheel.moveVelocity(0);
 			controller.setText(0, 0, "flywheel off");
 		}
