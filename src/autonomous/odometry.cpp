@@ -12,16 +12,16 @@ okapi::Rate rate; // for consistent rate of loops
 okapi::IMU imu1 = okapi::IMU(18, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
-// okapi::OpticalSensor optical(0);
+okapi::OpticalSensor optical(0);
 
 // vision for auto aim
-// pros::Vision vision(12, pros::E_VISION_ZERO_CENTER);
-// pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 3811, 6313, 5062, -3295, 1, -1647, 3.400, 0);
-// pros::vision_signature_s_t red = pros::Vision::signature_from_utility(2, -3401, -2543, -2972, 13963, 16385, 15174, 11.000, 0);
+pros::Vision vision(12, pros::E_VISION_ZERO_CENTER);
+pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 3811, 6313, 5062, -3295, 1, -1647, 3.400, 0);
+pros::vision_signature_s_t red = pros::Vision::signature_from_utility(2, -3401, -2543, -2972, 13963, 16385, 15174, 11.000, 0);
 
 // pid constants
 okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.018, 0.0, 0.000567);
-okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(2.5, 0.00, 0.03); // 0.57, 0.01, 0.02; // p 3 works too
+okapi::IterativePosPIDController chassisDrivePid = okapi::IterativeControllerFactory::posPID(2.2, 0.00, 0.1); // 0.57, 0.01, 0.02; // p 3 works too
 okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFactory::posPID(0.25, 0.0, 0.0025);
 okapi::IterativePosPIDController chassisVisionPid = okapi::IterativeControllerFactory::posPID(0.005, 0.0, 0.0);
 
@@ -74,7 +74,7 @@ void imuTurnToAngle(double deg) {
   double init = timer.millis().convert(okapi::second); // saving initial time to calculate time elapsed
 
   while (!(abs(deg - getHeading(safe)) < 4 && !isMoving())) { // if close enough and stopped moving
-    if (timer.millis().convert(okapi::second) - init > 1) {
+    if (timer.millis().convert(okapi::second) - init > 0.7) {
       break; // break if too long
     }
 
@@ -132,7 +132,7 @@ void jCurve(double x, double y, bool forward, double offset, double speedMultipl
 
   double drivePidValue = 0; // drive
   double turnPidValue = 0; // turn
-  double turnStrength = 0.6; // how sharp the turns can be; bigger = turn more
+  double turnStrength = 0.9; // how sharp the turns can be; bigger = turn more
   double dX, dY; // current displacement
   double encoderReading = 1000000000.0; // arbitrarily large starting value so the while loop can start without breaking due to unitialized variable
   double finalDriveValue; // drive value after speed calculations etc.

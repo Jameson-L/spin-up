@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-int auton = 2;
+int auton = 3;
 
 void on_center_button() {
 	static bool pressed = false;
@@ -70,7 +70,7 @@ void autonomous() {
 		left();
 	} else if (auton == 1) {
 		awp();
-	} else {
+	} else if (auton == 2){
 		right();
 	}
 }
@@ -117,7 +117,7 @@ void opcontrol() {
 		// pros::lcd::set_text(3, std::to_string(getHeading(false)));
 		// pros::lcd::set_text(4, std::to_string(pos.theta.convert(okapi::degree)));
 
-// /*
+/*
 		pros::lcd::set_text(1, std::to_string(LF.getPosition()));
 		pros::lcd::set_text(2, std::to_string(LM.getPosition()));
 		pros::lcd::set_text(3, std::to_string(LB.getPosition()));
@@ -181,7 +181,7 @@ void opcontrol() {
 				prevError = error;
 			}
 
-			if (flywheel.getActualVelocity() < targetSpeed - 50) {
+			if (flywheel.getActualVelocity() < targetSpeed - 40) {
 	      flywheel.controllerSet(1);
 	    } else {
 	      flywheel.controllerSet(output);
