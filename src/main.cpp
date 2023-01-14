@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+int auton = 2;
+
 void on_center_button() {
 	static bool pressed = false;
 	pressed = !pressed;
@@ -18,18 +20,35 @@ void on_center_button() {
 	}
 }
 
+void leftAuton() {
+	auton = 0;
+	pros::lcd::set_text(1, "Left");
+}
+
+void awpAuton() {
+	auton = 1;
+	pros::lcd::set_text(1, "AWP");
+}
+
+void rightAuton() {
+	auton = 2;
+	pros::lcd::set_text(1, "Right");
+}
+
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Among."); // sus
-	pros::lcd::register_btn1_cb(on_center_button);
+	// pros::lcd::set_text(1, "Among."); // sus
+	pros::lcd::register_btn0_cb(leftAuton);
+	pros::lcd::register_btn1_cb(awpAuton);
+	pros::lcd::register_btn2_cb(rightAuton);
 
 	// setting pin modes and starting positions
 	pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-	vision.set_signature(1, &blue);
-	vision.set_signature(2, &red);
+	// vision.set_signature(1, &blue);
+	// vision.set_signature(2, &red);
 
 	// for proper rpm control
 	flywheel.setGearing(okapi::AbstractMotor::gearset::blue);
@@ -46,8 +65,14 @@ void autonomous() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
-	right();
-	// left();
+
+	if (auton == 0) {
+		left();
+	} else if (auton == 1) {
+		awp();
+	} else {
+		right();
+	}
 }
 
 void opcontrol() {
@@ -75,12 +100,12 @@ void opcontrol() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	// okapi::MedianFilter<40> filter; // 40 is good, higher number = less noise but slower
 
-	// okapi::Motor LF = okapi::Motor(kDriveLFPort);
-	// okapi::Motor LM = okapi::Motor(kDriveLMPort);
-	// okapi::Motor LB = okapi::Motor(kDriveLBPort);
-	// okapi::Motor RF = okapi::Motor(kDriveRFPort);
-	// okapi::Motor RM = okapi::Motor(kDriveRMPort);
-	// okapi::Motor RB = okapi::Motor(kDriveRBPort);
+	okapi::Motor LF = okapi::Motor(kDriveLFPort);
+	okapi::Motor LM = okapi::Motor(kDriveLMPort);
+	okapi::Motor LB = okapi::Motor(kDriveLBPort);
+	okapi::Motor RF = okapi::Motor(kDriveRFPort);
+	okapi::Motor RM = okapi::Motor(kDriveRMPort);
+	okapi::Motor RB = okapi::Motor(kDriveRBPort);
 
 	// main loop:
 	while (true) {
@@ -92,14 +117,14 @@ void opcontrol() {
 		// pros::lcd::set_text(3, std::to_string(getHeading(false)));
 		// pros::lcd::set_text(4, std::to_string(pos.theta.convert(okapi::degree)));
 
-/*
+// /*
 		pros::lcd::set_text(1, std::to_string(LF.getPosition()));
 		pros::lcd::set_text(2, std::to_string(LM.getPosition()));
 		pros::lcd::set_text(3, std::to_string(LB.getPosition()));
 		pros::lcd::set_text(4, std::to_string(RF.getPosition()));
 		pros::lcd::set_text(5, std::to_string(RM.getPosition()));
 		pros::lcd::set_text(6, std::to_string(RB.getPosition()));
-		*/
+		// */
 
 		// std::cout << "left: " << LTrackingWheel.controllerGet() << '\n';
 		// std::cout << "right: " << RTrackingWheel.controllerGet() << '\n';
@@ -136,9 +161,9 @@ void opcontrol() {
 		if (controller[okapi::ControllerDigital::R1].changedToPressed()) {
 			flywheelToggle = !flywheelToggle;
 		}
-		
-		
-		
+
+
+
 		if (flywheelToggle) {
 			// // flywheel.controllerSet(0.8);
 			// if (flywheel.getActualVelocity() < targetSpeed-30) {
@@ -156,7 +181,7 @@ void opcontrol() {
 				prevError = error;
 			}
 
-			if (flywheel.getActualVelocity() < speed - 40) {
+			if (flywheel.getActualVelocity() < targetSpeed - 50) {
 	      flywheel.controllerSet(1);
 	    } else {
 	      flywheel.controllerSet(output);
@@ -165,9 +190,9 @@ void opcontrol() {
 			controller.setText(0, 0, "flywheel on ");
 		} else {
 			// flywheel.controllerSet(0);
-			output =0;
-			tbh = targetSpeed/600.0;
-			prevError =1;
+			output = 0;
+			tbh = targetSpeed / 600.0;
+			prevError = 1;
 			flywheel.moveVelocity(0);
 			controller.setText(0, 0, "flywheel off");
 		}

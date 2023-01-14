@@ -37,7 +37,8 @@ void flywheelTask() {
       tbh = output;
       prevError = error;
     }
-    if (flywheel.getActualVelocity() < speed - 100) {
+
+    if (flywheel.getActualVelocity() < speed - 50) {
       flywheel.controllerSet(1);
     } else {
       flywheel.controllerSet(output);

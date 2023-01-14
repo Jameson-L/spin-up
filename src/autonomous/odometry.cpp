@@ -12,12 +12,12 @@ okapi::Rate rate; // for consistent rate of loops
 okapi::IMU imu1 = okapi::IMU(18, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
-okapi::OpticalSensor optical(0);
+// okapi::OpticalSensor optical(0);
 
 // vision for auto aim
-pros::Vision vision(12, pros::E_VISION_ZERO_CENTER);
-pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 3811, 6313, 5062, -3295, 1, -1647, 3.400, 0);
-pros::vision_signature_s_t red = pros::Vision::signature_from_utility(2, -3401, -2543, -2972, 13963, 16385, 15174, 11.000, 0);
+// pros::Vision vision(12, pros::E_VISION_ZERO_CENTER);
+// pros::vision_signature_s_t blue = pros::Vision::signature_from_utility(1, 3811, 6313, 5062, -3295, 1, -1647, 3.400, 0);
+// pros::vision_signature_s_t red = pros::Vision::signature_from_utility(2, -3401, -2543, -2972, 13963, 16385, 15174, 11.000, 0);
 
 // pid constants
 okapi::IterativePosPIDController chassisTurnPid = okapi::IterativeControllerFactory::posPID(0.018, 0.0, 0.000567);
