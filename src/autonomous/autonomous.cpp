@@ -7,7 +7,7 @@
 
 bool continueFlywheel = false;
 double speed = 0;
-double tbhGain = 0.0007; // tune this
+double tbhGain = 0.000013;// tune this
 
 
 // task functions for auton
@@ -38,7 +38,7 @@ void flywheelTask() {
       prevError = error;
     }
 
-    if (flywheel.getActualVelocity() < speed - 40) {
+    if (flywheel.getActualVelocity() < speed - 100) {
       flywheel.controllerSet(1);
     } else {
       flywheel.controllerSet(output);
@@ -52,7 +52,7 @@ void roller() {
 }
 
 void right() {
-  speed = 650;
+  speed = 470;
   // pros::Task startFlywheel(flywheelTask);
   flywheel.controllerSet(1);
   intake.controllerSet(1);

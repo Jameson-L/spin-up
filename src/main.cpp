@@ -86,7 +86,7 @@ void opcontrol() {
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
 	bool expandToggle = false; // false = off
-	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
+	double targetSpeed = 600; // target speed of flywheel - blue is 600 max
 	bool holdDrive = false;
 	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
 	chassisVisionPid.reset();
@@ -181,7 +181,7 @@ void opcontrol() {
 				prevError = error;
 			}
 
-			if (flywheel.getActualVelocity() < targetSpeed - 40) {
+			if (flywheel.getActualVelocity() < targetSpeed - 	30) {
 	      flywheel.controllerSet(1);
 	    } else {
 	      flywheel.controllerSet(output);
@@ -210,7 +210,7 @@ void opcontrol() {
 			intake.controllerSet(1);
 		} else if (controller[okapi::ControllerDigital::R2].isPressed()) {
 			hold = false;
-			intake.controllerSet(-1);
+			intake.controllerSet(-0.9);
 		} else if (!hold) {
 			intake.controllerSet(0);
 		}
