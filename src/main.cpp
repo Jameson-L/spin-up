@@ -182,7 +182,7 @@ void opcontrol() {
 			}
 
 			if (flywheel.getActualVelocity() < targetSpeed - 	30) {
-	      flywheel.controllerSet(1);
+	      flywheel.controllerSet(-1);
 	    } else {
 	      flywheel.controllerSet(output);
 	    }
