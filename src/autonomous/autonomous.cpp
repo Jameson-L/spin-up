@@ -7,12 +7,12 @@
 
 bool continueFlywheel = false;
 double speed = 0;
-double tbhGain = 0.000013;// tune this
+double tbhGain = 0.000015;// tune this
 
 
 // task functions for auton
 void flywheelTask() {
-  continueFlywheel = true;
+  continueFlywheel =  true;
   okapi::Rate rate;
   // while (continueFlywheel) {
   //   if (flywheel.getActualVelocity() < speed-50) {
