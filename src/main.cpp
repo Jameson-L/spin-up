@@ -86,7 +86,7 @@ void opcontrol() {
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
 	bool expandToggle = false; // false = off
-	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
+	double targetSpeed = 580; // target speed of flywheel - blue is 600 max
 	bool holdDrive = false;
 	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
 	chassisVisionPid.reset();

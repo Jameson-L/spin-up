@@ -7,7 +7,7 @@
 
 bool continueFlywheel = false;
 double speed = 0;
-double tbhGain = 0.000015;// tune this
+double tbhGain = 0.77;// tune this
 
 
 // task functions for auton
@@ -114,4 +114,4 @@ void left() {
   intake.moveRelative(300, 600);
 }
 
-void awp() {}
+void awp() {/*400 point skills when?????!?!?!?!??!!?!*/}
