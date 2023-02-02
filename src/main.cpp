@@ -66,13 +66,13 @@ void autonomous() {
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
 
-	if (auton == 0) {
-		left();
-	} else if (auton == 1) {
-		awp();
-	} else if (auton == 2){
+	// if (auton == 0) {
+	// 	left();
+	// } else if (auton == 1) {
+	// 	// awp();
+	// } else if (auton == 2){
 		right();
-	}
+	// }
 }
 
 void opcontrol() {
@@ -181,7 +181,7 @@ void opcontrol() {
 				prevError = error;
 			}
 
-			if (flywheel.getActualVelocity() < targetSpeed - 	30) {
+			if (flywheel.getActualVelocity() < targetSpeed - 30) {
 	      flywheel.controllerSet(1);
 	    } else {
 	      flywheel.controllerSet(output);
@@ -217,7 +217,7 @@ void opcontrol() {
 
 		if (controller[okapi::ControllerDigital::L2].changedToPressed()) {
 			hold = true;
-			intake.moveRelative(-100, 600);
+			intake.moveRelative(-245, 600);
 		}
 		if (!controller[okapi::ControllerDigital::L2].isPressed()) {
 			hold = false;

@@ -12,7 +12,7 @@ double tbhGain = 0.77;// tune this
 
 // task functions for auton
 void flywheelTask() {
-  continueFlywheel =  true;
+  continueFlywheel = true;
   okapi::Rate rate;
   // while (continueFlywheel) {
   //   if (flywheel.getActualVelocity() < speed-50) {
@@ -48,43 +48,48 @@ void flywheelTask() {
 }
 
 void roller() {
-  relative(-2, 0.3, 2);
+  relative(-2, 0.5, 0.5);
+  // relative(-2, 0.05, 2);
 }
 
 void right() {
-  speed = 470;
+  // speed = 470;
   // pros::Task startFlywheel(flywheelTask);
   flywheel.controllerSet(1);
   intake.controllerSet(1);
   // jCurve(8, 0, true, 0, 1, 0.3);
-  jCurve(2.6, 0.4, true, 0, 1, 1);
-  imuTurnToAngle(24);
-  pros::delay(2500);
+  odomDriveToPoint(2.6, 0, true, 0.2, 1, 1);
+  imuTurnToAngle(25);
+  pros::delay(2000);
   intake.controllerSet(0);
-  intake.moveRelative(-100, 600);
+  pros::delay(2000);
+  intake.moveRelative(-245, 600);
+  std::cout << flywheel.getActualVelocity() << "\n";
   pros::delay(1400);
-  intake.moveRelative(-100, 600);
+  intake.moveRelative(-245, 600);
+  std::cout << flywheel.getActualVelocity() << "\n";
   pros::delay(1400);
-  intake.moveRelative(-100, 600);
+  intake.moveRelative(-245, 600);
+  std::cout << flywheel.getActualVelocity() << "\n";
   pros::delay(300);
-  jCurve(1.6, 0.8, false, 0, 1, 0.7);
+  odomDriveToPoint(1.2, 0, false, 0, 1, 0.6);
   intake.controllerSet(1);
-  odomDriveToPoint(4.75, -3, true, 1.6, 1, 2);
+  odomDriveToPoint(4.25, -3, true, 1.4, 1, 1.7);
   // jCurve(2.9, 0.2, false, 0, 1, 1);
-  imuTurnToAngle(49);
+  imuTurnToAngle(46);
   intake.controllerSet(0);
   // relative(0.4, 1, 0.5);
-  relative(1, 1, 0.5);
-  intake.moveRelative(-100, 600);
-  pros::delay(900);
-  intake.moveRelative(-100, 600);
-  pros::delay(300);
+  intake.moveRelative(-245, 600);
+  pros::delay(600);
+  relative(0.5, 1, 0.5);
+  intake.moveRelative(-245, 600);
+  pros::delay(350);
   flywheel.controllerSet(0);
-  jCurve(0.3, 2.2, false, 0, 1, 2);
+  odomDriveToPoint(0.2, 1.8, false, 0, 1, 2);
   imuTurnToAngle(0);
   pros::Task rollerTask(roller);
-  pros::delay(250);
-  intake.moveRelative(300, 600);
+  pros::delay(400);
+  intake.moveRelative(100, 600);
 }
 
 void left() {
@@ -101,17 +106,17 @@ void left() {
   relative(0.7, 1, 0.5);
   intake.controllerSet(0);
   pros::delay(2000);
-  intake.moveRelative(-100, 600);
+  intake.moveRelative(-245, 600);
   pros::delay(1400);
-  intake.moveRelative(-100, 600);
+  intake.moveRelative(-245, 600);
   pros::delay(1400);
-  intake.moveRelative(-100, 600);
+  intake.moveRelative(-245, 600);
   pros::delay(300);
   jCurve(0, 0.5, false, 0, 1, 2);
   imuTurnToAngle(0);
   pros::Task rollerTask(roller);
   pros::delay(250);
-  intake.moveRelative(300, 600);
+  intake.moveRelative(400, 600);
 }
 
-void awp() {/*400 point skills when?????!?!?!?!??!!?!*/}
+// void awp();

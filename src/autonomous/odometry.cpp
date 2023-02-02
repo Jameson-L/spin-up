@@ -9,7 +9,7 @@ okapi::Rate rate; // for consistent rate of loops
 // okapi::ADIEncoder RTrackingWheel = okapi::ADIEncoder({2, 0, 0}, false);
 // okapi::ADIEncoder MTrackingWheel = okapi::ADIEncoder(0, 0, true);
 
-okapi::IMU imu1 = okapi::IMU(18, okapi::IMUAxes::z);
+okapi::IMU imu1 = okapi::IMU(20, okapi::IMUAxes::z);
 // okapi::IMU imu2 = okapi::IMU(0, okapi::IMUAxes::x);
 
 okapi::OpticalSensor optical(0);
@@ -52,7 +52,7 @@ bool isMoving() {
   abs(okapi::Motor(kDriveLBPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRFPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRMPort).getActualVelocity()) +
-  abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 10;
+  abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 5;
 }
 
 bool isRed() {
@@ -74,7 +74,7 @@ void imuTurnToAngle(double deg) {
   double init = timer.millis().convert(okapi::second); // saving initial time to calculate time elapsed
 
   while (!(abs(deg - getHeading(safe)) < 4 && !isMoving())) { // if close enough and stopped moving
-    if (timer.millis().convert(okapi::second) - init > 0.7) {
+    if (timer.millis().convert(okapi::second) - init > 1) {
       break; // break if too long
     }
 

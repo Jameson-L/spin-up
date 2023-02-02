@@ -11,7 +11,7 @@ const int8_t kDriveLMPort = -16;
 const int8_t kDriveLBPort = -14;
 const int8_t kDriveRFPort = 13;
 const int8_t kDriveRMPort = 19;
-const int8_t kDriveRBPort = 20;
+const int8_t kDriveRBPort = 18;
 
 // creating chassis object
 std::shared_ptr<okapi::OdomChassisController> chassis = okapi::ChassisControllerBuilder()
