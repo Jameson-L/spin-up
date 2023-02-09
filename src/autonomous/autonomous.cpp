@@ -7,7 +7,7 @@
 
 bool continueFlywheel = false;
 double speed = 0;
-double tbhGain = 0.77;// tune this
+double tbhGain = 0.00002;// tune this, try 0.00003 LOWER TARGET SPEED = HIGHER TBHGAIN
 
 
 // task functions for auton
@@ -38,12 +38,12 @@ void flywheelTask() {
       prevError = error;
     }
 
-    if (flywheel.getActualVelocity() < speed - 100) {
+    if (flywheel.getActualVelocity() < speed - 30) {
       flywheel.controllerSet(1);
     } else {
       flywheel.controllerSet(output);
     }
-    rate.delay(40_Hz);
+    rate.delay(100_Hz);
   }
 }
 
@@ -52,71 +52,56 @@ void roller() {
   // relative(-2, 0.05, 2);
 }
 
+void awaitFlywheel() {
+  while (flywheel.getActualVelocity() <= 595) {
+  }
+}
+
 void right() {
-  // speed = 470;
+  // speed = 550;
   // pros::Task startFlywheel(flywheelTask);
   flywheel.controllerSet(1);
   intake.controllerSet(1);
   // jCurve(8, 0, true, 0, 1, 0.3);
-  odomDriveToPoint(2.6, 0, true, 0.2, 1, 1);
-  imuTurnToAngle(25);
-  pros::delay(2000);
+  odomDriveToPoint(1.8, 0, true, 0.2, 1, 1.5);
+  imuTurnToAngle(30);
+  pros::delay(1500);
   intake.controllerSet(0);
-  pros::delay(2000);
-  intake.moveRelative(-245, 600);
-  std::cout << flywheel.getActualVelocity() << "\n";
-  pros::delay(1400);
-  intake.moveRelative(-245, 600);
-  std::cout << flywheel.getActualVelocity() << "\n";
-  pros::delay(1400);
-  intake.moveRelative(-245, 600);
-  std::cout << flywheel.getActualVelocity() << "\n";
-  pros::delay(300);
-  odomDriveToPoint(1.2, 0, false, 0, 1, 0.6);
+
+  for (int i = 0; i < 3; i++) {
+    awaitFlywheel();
+    intake.moveRelative(-245, 600);
+    pros::delay(500);
+    std::cout << flywheel.getActualVelocity() << "\n";
+  }
+  pros::delay(400);
+  // odomDriveToPoint(1.2, 0, false, 0, 1, 0.6);
   intake.controllerSet(1);
-  odomDriveToPoint(4.25, -3, true, 1.4, 1, 1.7);
+  odomDriveToPoint(4.7, -3, true, 1.4, 1, 2.5);
   // jCurve(2.9, 0.2, false, 0, 1, 1);
-  imuTurnToAngle(46);
+
+
+  imuTurnToAngle(54);
   intake.controllerSet(0);
   // relative(0.4, 1, 0.5);
-  intake.moveRelative(-245, 600);
-  pros::delay(600);
-  relative(0.5, 1, 0.5);
-  intake.moveRelative(-245, 600);
-  pros::delay(350);
-  flywheel.controllerSet(0);
-  odomDriveToPoint(0.2, 1.8, false, 0, 1, 2);
-  imuTurnToAngle(0);
-  pros::Task rollerTask(roller);
-  pros::delay(400);
-  intake.moveRelative(100, 600);
-}
 
-void left() {
-  // pros::Task rollerTask(roller);
-  // pros::delay(500);
-  // intake.moveRelative(1000, 600);
-  flywheel.controllerSet(1);
-  intake.controllerSet(1);
-  jCurve(0.6, -0.5, true, 0.1, 1, 1);
-  pros::delay(500);
-  relative(-0.8, 1, 0.5);
-  odomDriveToPoint(5, 5, false, 0, 1, 2);
-  imuTurnToAngle(-34);
-  relative(0.7, 1, 0.5);
-  intake.controllerSet(0);
-  pros::delay(2000);
+
   intake.moveRelative(-245, 600);
-  pros::delay(1400);
+  pros::delay(400);
+  awaitFlywheel();
+  // pros::delay(850);
+  // relative(0.5, 1, 0.5);
   intake.moveRelative(-245, 600);
-  pros::delay(1400);
-  intake.moveRelative(-245, 600);
-  pros::delay(300);
-  jCurve(0, 0.5, false, 0, 1, 2);
+
+
+  pros::delay(400);
+  flywheel.controllerSet(0);
+  intake.moveRelative(100, 600);
+  odomDriveToPoint(0.2, 2.5, false, 0, 1, 2);
   imuTurnToAngle(0);
   pros::Task rollerTask(roller);
-  pros::delay(250);
-  intake.moveRelative(400, 600);
+  // pros::delay(400);
+  // intake.moveRelative(100, 600);
 }
 
 // void awp();

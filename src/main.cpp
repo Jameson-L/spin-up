@@ -52,8 +52,17 @@ void initialize() {
 
 	// for proper rpm control
 	flywheel.setGearing(okapi::AbstractMotor::gearset::blue);
-
 	intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
+
+	pros::c::adi_pin_mode(4, INPUT); // auton selector
+	pros::ADIAnalogIn select = pros::ADIAnalogIn(4);
+	if (select.get_value() > 1120 && select.get_value() < 2048) {
+		rightAuton();
+	} else if (select.get_value() > 210 && select.get_value() < 1120) {
+		leftAuton();
+	} else if (select.get_value() > 2048 && select.get_value() < 195) {
+		awpAuton();
+	}
 }
 
 void disabled() {}
@@ -86,14 +95,14 @@ void opcontrol() {
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
 	bool expandToggle = false; // false = off
-	double targetSpeed = 580; // target speed of flywheel - blue is 600 max
+	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
 	bool holdDrive = false;
 	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
 	chassisVisionPid.reset();
 	double error;
 	double prevError = 1;
-	double output = 0;
 	double tbh = targetSpeed / 600.0; // maybe tune this, unlikely
+	double output = 0;
 
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
@@ -106,6 +115,8 @@ void opcontrol() {
 	okapi::Motor RF = okapi::Motor(kDriveRFPort);
 	okapi::Motor RM = okapi::Motor(kDriveRMPort);
 	okapi::Motor RB = okapi::Motor(kDriveRBPort);
+
+	pros::ADIAnalogIn select = pros::ADIAnalogIn(4);
 
 	// main loop:
 	while (true) {
@@ -146,7 +157,7 @@ void opcontrol() {
 		// std::cout<< "imu: " << getHeading() << '\n';
 		// std::cout << allMotors.getEfficiency() << "\n";
 		// std::cout << "current: " << flywheel.getActualVelocity() << " target: " << targetSpeed * 2 - flywheel.getActualVelocity() << "\n";
-
+		std::cout << select.get_value() << "\n";
 
 		if (controller.getAnalog(okapi::ControllerAnalog::leftX) == -1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == 1) {
 					holdDrive = false;
@@ -161,8 +172,6 @@ void opcontrol() {
 		if (controller[okapi::ControllerDigital::R1].changedToPressed()) {
 			flywheelToggle = !flywheelToggle;
 		}
-
-
 
 		if (flywheelToggle) {
 			// // flywheel.controllerSet(0.8);
@@ -180,18 +189,19 @@ void opcontrol() {
 				tbh = output;
 				prevError = error;
 			}
-
 			if (flywheel.getActualVelocity() < targetSpeed - 30) {
 	      flywheel.controllerSet(1);
 	    } else {
 	      flywheel.controllerSet(output);
 	    }
+			std::cout << flywheel.getActualVelocity() << " " << output << "\n";
+
 
 			controller.setText(0, 0, "flywheel on ");
 		} else {
 			// flywheel.controllerSet(0);
-			output = 0;
 			tbh = targetSpeed / 600.0;
+			output = 0;
 			prevError = 1;
 			flywheel.moveVelocity(0);
 			controller.setText(0, 0, "flywheel off");
@@ -210,14 +220,14 @@ void opcontrol() {
 			intake.controllerSet(1);
 		} else if (controller[okapi::ControllerDigital::R2].isPressed()) {
 			hold = false;
-			intake.controllerSet(-0.9);
+			intake.controllerSet(-1);
 		} else if (!hold) {
 			intake.controllerSet(0);
 		}
 
 		if (controller[okapi::ControllerDigital::L2].changedToPressed()) {
 			hold = true;
-			intake.moveRelative(-245, 600);
+			intake.moveRelative(-240, 600);
 		}
 		if (!controller[okapi::ControllerDigital::L2].isPressed()) {
 			hold = false;
