@@ -43,10 +43,12 @@ void initialize() {
 	pros::lcd::register_btn2_cb(rightAuton);
 
 	// setting pin modes and starting positions
-	pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
+	// pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
+	pros::c::adi_pin_mode(kPneumaticBlooperPort, OUTPUT);
+	// pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
-	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
+	pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 	// vision.set_signature(1, &blue);
 	// vision.set_signature(2, &red);
 
@@ -72,8 +74,9 @@ void competition_initialize() {}
 void autonomous() {
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold); // for tighter movements
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+	// pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
-	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
+	pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 
 	// if (auton == 0) {
 	// 	left();
@@ -99,10 +102,11 @@ void opcontrol() {
 	bool holdDrive = false;
 	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
 	chassisVisionPid.reset();
-	double error;
-	double prevError = 1;
-	double tbh = targetSpeed / 600.0; // maybe tune this, unlikely
-	double output = 0;
+	// double error;
+	// double prevError = 1;
+	// double tbh = targetSpeed / 600.0; // maybe tune this, unlikely
+	// double output = 0;
+	bool blooperOn = false;
 
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
@@ -122,9 +126,9 @@ void opcontrol() {
 	while (true) {
 
 		// printing odometry tests:
-		okapi::OdomState pos = chassis->getState();
-		pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
-		pros::lcd::set_text(2, std::to_string(pos.y.convert(okapi::foot)));
+		// okapi::OdomState pos = chassis->getState();
+		// pros::lcd::set_text(1, std::to_string(pos.x.convert(okapi::foot)));
+		// pros::lcd::set_text(2, std::to_string(pos.y.convert(okapi::foot)));
 		// pros::lcd::set_text(3, std::to_string(getHeading(false)));
 		// pros::lcd::set_text(4, std::to_string(pos.theta.convert(okapi::degree)));
 
@@ -173,6 +177,14 @@ void opcontrol() {
 			flywheelToggle = !flywheelToggle;
 		}
 
+		if (blooperOn) {
+			targetSpeed = 550;
+			pros::c::adi_digital_write(kPneumaticBlooperPort, HIGH);
+		} else {
+			targetSpeed = 500;
+			pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
+		}
+
 		if (flywheelToggle) {
 			// // flywheel.controllerSet(0.8);
 			// if (flywheel.getActualVelocity() < targetSpeed-30) {
@@ -182,37 +194,45 @@ void opcontrol() {
 			// }
 			// // flywheel.moveVelocity(targetSpeed * 2 - flywheel.getActualVelocity()); // power correction, makes it target an extra high rpm if too low
 
-			error = targetSpeed - flywheel.getActualVelocity();
-			output += tbhGain * error;
-			if (signbit(error) != signbit(prevError)) {
-				output = 0.5 * (output + tbh);
-				tbh = output;
-				prevError = error;
-			}
-			if (flywheel.getActualVelocity() < targetSpeed - 30) {
-	      flywheel.controllerSet(1);
-	    } else {
-	      flywheel.controllerSet(output);
-	    }
-			std::cout << flywheel.getActualVelocity() << " " << output << "\n";
+			// error = targetSpeed - flywheel.getActualVelocity();
+			// output += tbhGain * error;
+			// if (signbit(error) != signbit(prevError)) {
+			// 	output = 0.5 * (output + tbh);
+			// 	tbh = output;
+			// 	prevError = error;
+			// }
+			// if (flywheel.getActualVelocity() < targetSpeed - 30) {
+	    //   flywheel.controllerSet(1);
+	    // } else {
+	    //   flywheel.controllerSet(output);
+	    // }
+			// std::cout << flywheel.getActualVelocity() << " " << output << "\n";
 
+			if (flywheel.getActualVelocity() < targetSpeed - 100) {
+				flywheel.controllerSet(1);
+			} else {
+				flywheel.controllerSet(
+					-1 * (1 - targetSpeed / 600) * 0.01 * flywheel.getActualVelocity()
+					+ -1 * targetSpeed * targetSpeed + 7000 * targetSpeed / 60000.0
+				);
+			}
 
 			controller.setText(0, 0, "flywheel on ");
 		} else {
-			// flywheel.controllerSet(0);
-			tbh = targetSpeed / 600.0;
-			output = 0;
-			prevError = 1;
-			flywheel.moveVelocity(0);
+			flywheel.controllerSet(0);
+			// tbh = targetSpeed / 600.0;
+			// output = 0;
+			// prevError = 1;
+			// flywheel.moveVelocity(0);
 			controller.setText(0, 0, "flywheel off");
 		}
 
 		// piston indexer
-		if (controller[okapi::ControllerDigital::R2].isPressed()) {
-			pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
-		} else {
-			pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-		}
+		// if (controller[okapi::ControllerDigital::R2].isPressed()) {
+		// 	pros::c::adi_digital_write(kPneumaticIndexerPort, HIGH);
+		// } else {
+		// 	pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
+		// }
 
 		// intake or roller (hold to use)
 		if (controller[okapi::ControllerDigital::L1].isPressed()) {
@@ -237,6 +257,10 @@ void opcontrol() {
 
 		// expansion piston
 		if (controller[okapi::ControllerDigital::up].changedToPressed()) {
+			blooperOn = !blooperOn;
+		}
+
+		if (controller[okapi::ControllerDigital::down].changedToPressed()) {
 			expandToggle = !expandToggle;
 		}
 
