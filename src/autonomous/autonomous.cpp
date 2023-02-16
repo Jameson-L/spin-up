@@ -30,18 +30,29 @@ void flywheelTask() {
 	double tbh = speed / 600.0; // maybe tune this, unlikely
 
   while (continueFlywheel) {
-    error = speed - flywheel.getActualVelocity();
-    output += tbhGain * error;
-    if (signbit(error) != signbit(prevError)) {
-      output = 0.5 * (output + tbh);
-      tbh = output;
-      prevError = error;
-    }
-
-    if (flywheel.getActualVelocity() < speed - 30) {
+    // error = speed - flywheel.getActualVelocity();
+    // output += tbhGain * error;
+    // if (signbit(error) != signbit(prevError)) {
+    //   output = 0.5 * (output + tbh);
+    //   tbh = output;
+    //   prevError = error;
+    // }
+    //
+    // if (flywheel.getActualVelocity() < speed - 30) {
+    //   flywheel.controllerSet(1);
+    // } else {
+    //   flywheel.controllerSet(output);
+    // }
+    if (flywheel.getActualVelocity() < speed - 100) {
       flywheel.controllerSet(1);
     } else {
-      flywheel.controllerSet(output);
+      flywheel.controllerSet(
+        // -1 * (1 - targetSpeed / 600) * 0.01 * flywheel.getActualVelocity()
+        // + (-1 * targetSpeed * targetSpeed + 700 * targetSpeed) / 60000.0
+        speed / 600.0
+      );
+      // std::cout << flywheel.getActualVelocity() << " " << -1 * (1 - targetSpeed / 600) * 0.01 * flywheel.getActualVelocity()
+      // + (-1 * targetSpeed * targetSpeed + 700 * targetSpeed) / 60000.0 << "\n";
     }
     rate.delay(100_Hz);
   }

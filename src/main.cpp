@@ -45,10 +45,10 @@ void initialize() {
 	// setting pin modes and starting positions
 	// pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
-	pros::c::adi_pin_mode(kPneumaticBlooperPort, OUTPUT);
+	// pros::c::adi_pin_mode(kPneumaticBlooperPort, OUTPUT);
 	// pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
-	pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
+	// pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 	// vision.set_signature(1, &blue);
 	// vision.set_signature(2, &red);
 
@@ -76,7 +76,7 @@ void autonomous() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	// pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
-	pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
+	// pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 
 	// if (auton == 0) {
 	// 	left();
@@ -106,7 +106,7 @@ void opcontrol() {
 	// double prevError = 1;
 	// double tbh = targetSpeed / 600.0; // maybe tune this, unlikely
 	// double output = 0;
-	bool blooperOn = false;
+	bool blooperOn = true;
 
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
@@ -121,6 +121,8 @@ void opcontrol() {
 	okapi::Motor RB = okapi::Motor(kDriveRBPort);
 
 	pros::ADIAnalogIn select = pros::ADIAnalogIn(4);
+
+	// okapi::MedianFilter<10> filter;
 
 	// main loop:
 	while (true) {
@@ -161,12 +163,12 @@ void opcontrol() {
 		// std::cout<< "imu: " << getHeading() << '\n';
 		// std::cout << allMotors.getEfficiency() << "\n";
 		// std::cout << "current: " << flywheel.getActualVelocity() << " target: " << targetSpeed * 2 - flywheel.getActualVelocity() << "\n";
-		std::cout << select.get_value() << "\n";
+		// std::cout << select.get_value() << "\n";
 
 		if (controller.getAnalog(okapi::ControllerAnalog::leftX) == -1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == 1) {
-					holdDrive = false;
-					controller.setText(1, 0, "coast");
-				}
+			holdDrive = false;
+			controller.setText(1, 0, "coast");
+		}
 		if (controller.getAnalog(okapi::ControllerAnalog::leftX) == 1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == -1) {
 			holdDrive = true;
 			controller.setText(1, 0, "hold ");
@@ -178,11 +180,11 @@ void opcontrol() {
 		}
 
 		if (blooperOn) {
-			targetSpeed = 550;
-			pros::c::adi_digital_write(kPneumaticBlooperPort, HIGH);
+			targetSpeed = 570;
+			// pros::c::adi_digital_write(kPneumaticBlooperPort, HIGH);
 		} else {
 			targetSpeed = 500;
-			pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
+			// pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
 		}
 
 		if (flywheelToggle) {
@@ -208,18 +210,25 @@ void opcontrol() {
 	    // }
 			// std::cout << flywheel.getActualVelocity() << " " << output << "\n";
 
-			if (flywheel.getActualVelocity() < targetSpeed - 100) {
+			if (flywheel.getActualVelocity() < targetSpeed - 100 || controller[okapi::ControllerDigital::R1].isPressed()) {
 				flywheel.controllerSet(1);
 			} else {
 				flywheel.controllerSet(
-					-1 * (1 - targetSpeed / 600) * 0.01 * flywheel.getActualVelocity()
-					+ -1 * targetSpeed * targetSpeed + 7000 * targetSpeed / 60000.0
+					// -1 * (1 - targetSpeed / 600) * 0.01 * flywheel.getActualVelocity()
+					// + (-1 * targetSpeed * targetSpeed + 700 * targetSpeed) / 60000.0
+					targetSpeed / 600.0
 				);
+				// std::cout << flywheel.getActualVelocity() << " " << -1 * (1 - targetSpeed / 600) * 0.01 * flywheel.getActualVelocity()
+				// + (-1 * targetSpeed * targetSpeed + 700 * targetSpeed) / 60000.0 << "\n";
 			}
 
 			controller.setText(0, 0, "flywheel on ");
 		} else {
-			flywheel.controllerSet(0);
+			if (controller[okapi::ControllerDigital::R1].isPressed()) {
+				flywheel.controllerSet(1);
+			} else {
+				flywheel.controllerSet(0);
+			}
 			// tbh = targetSpeed / 600.0;
 			// output = 0;
 			// prevError = 1;
