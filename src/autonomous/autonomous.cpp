@@ -121,8 +121,19 @@ void left() {
   pros::delay(400);
   allMotors.moveVelocity(0);
 
-  // line of discs and aim
+  // aim
   relative(0.5, 1, 0.7);
+  imuTurnToAngle(-5);
+
+  // shoot 3
+  for (int i = 0; i < 3; i++) {
+    awaitFlywheel();
+    intake.controllerSet(0);
+    intake.moveRelative(-245, 600);
+    pros::delay(500);
+  }
+
+  // line of discs and aim
   intake.controllerSet(1);
   odomDriveToPoint(2.5, 2.5, 0, 0.5, 4);
   imuTurnToAngle(-40);
