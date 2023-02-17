@@ -45,10 +45,12 @@ void initialize() {
 	// setting pin modes and starting positions
 	// pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
-	// pros::c::adi_pin_mode(kPneumaticBlooperPort, OUTPUT);
+	pros::c::adi_pin_mode(kPneumaticExpansionPort2, OUTPUT);
+	pros::c::adi_pin_mode(kPneumaticBlooperPort, OUTPUT);
 	// pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
-	// pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
+	pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW);
+	pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 	// vision.set_signature(1, &blue);
 	// vision.set_signature(2, &red);
 
@@ -60,9 +62,9 @@ void initialize() {
 	pros::ADIAnalogIn select = pros::ADIAnalogIn(4);
 	if (select.get_value() > 1120 && select.get_value() < 2048) {
 		rightAuton();
-	} else if (select.get_value() > 210 && select.get_value() < 1120) {
+	} else if (select.get_value() > 200 && select.get_value() < 1120) {
 		leftAuton();
-	} else if (select.get_value() > 2048 && select.get_value() < 195) {
+	} else if (select.get_value() > 2048 && select.get_value() < 200) {
 		awpAuton();
 	}
 }
@@ -76,12 +78,13 @@ void autonomous() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	// pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
-	// pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
+	pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW); // default position
+	pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 
 	if (auton == 0) {
 		left();
 	} else if (auton == 1) {
-		// awp();
+		awp();
 	} else if (auton == 2){
 		right();
 	}
@@ -98,6 +101,7 @@ void opcontrol() {
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
 	bool expandToggle = false; // false = off
+	bool expandToggle2 = false; // false = off
 	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
 	bool holdDrive = false;
 	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
@@ -113,14 +117,14 @@ void opcontrol() {
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	// okapi::MedianFilter<40> filter; // 40 is good, higher number = less noise but slower
 
-	okapi::Motor LF = okapi::Motor(kDriveLFPort);
-	okapi::Motor LM = okapi::Motor(kDriveLMPort);
-	okapi::Motor LB = okapi::Motor(kDriveLBPort);
-	okapi::Motor RF = okapi::Motor(kDriveRFPort);
-	okapi::Motor RM = okapi::Motor(kDriveRMPort);
-	okapi::Motor RB = okapi::Motor(kDriveRBPort);
+	// okapi::Motor LF = okapi::Motor(kDriveLFPort);
+	// okapi::Motor LM = okapi::Motor(kDriveLMPort);
+	// okapi::Motor LB = okapi::Motor(kDriveLBPort);
+	// okapi::Motor RF = okapi::Motor(kDriveRFPort);
+	// okapi::Motor RM = okapi::Motor(kDriveRMPort);
+	// okapi::Motor RB = okapi::Motor(kDriveRBPort);
 
-	pros::ADIAnalogIn select = pros::ADIAnalogIn(4);
+	// pros::ADIAnalogIn select = pros::ADIAnalogIn(4);
 
 	// okapi::MedianFilter<10> filter;
 
@@ -167,11 +171,9 @@ void opcontrol() {
 
 		if (controller.getAnalog(okapi::ControllerAnalog::leftX) == -1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == 1) {
 			holdDrive = false;
-			controller.setText(1, 0, "coast");
 		}
 		if (controller.getAnalog(okapi::ControllerAnalog::leftX) == 1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == -1) {
 			holdDrive = true;
-			controller.setText(1, 0, "hold ");
 		}
 
 		// flywheel toggling
@@ -262,15 +264,18 @@ void opcontrol() {
 			hold = false;
 		}
 
-
-
-		// expansion piston
-		if (controller[okapi::ControllerDigital::up].changedToPressed()) {
+		// blooper controls
+		if (controller[okapi::ControllerDigital::A].changedToPressed()) {
 			blooperOn = !blooperOn;
 		}
 
-		if (controller[okapi::ControllerDigital::down].changedToPressed()) {
+		// expansion controls (2)
+		if (controller[okapi::ControllerDigital::up].changedToPressed()) {
 			expandToggle = !expandToggle;
+			expandToggle2 = expandToggle;
+		}
+		if (controller[okapi::ControllerDigital::down].changedToPressed()) {
+			expandToggle2 = !expandToggle2;
 		}
 
 		if (expandToggle) {
@@ -279,21 +284,38 @@ void opcontrol() {
 			pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
 		}
 
+		if (expandToggle2) {
+			pros::c::adi_digital_write(kPneumaticExpansionPort2, HIGH);
+		} else {
+			pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW);
+		}
+
 		// set power variables
 		leftY = controller.getAnalog(okapi::ControllerAnalog::leftY);
 		rightY = controller.getAnalog(okapi::ControllerAnalog::rightY);
 
-		if (controller[okapi::ControllerDigital::A].isPressed()) {
-			allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
-			stepAutoAim();
-		} else {
-			if (holdDrive) {
+		// if (controller[okapi::ControllerDigital::A].isPressed()) {
+		// 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
+		// 	stepAutoAim();
+		// } else {
+		// 	if (holdDrive) {
+		// 		allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
+		// 	} else {
+		// 		allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+		// 	}
+		// 	chassis->getModel()->tank(leftY, rightY);
+		// }
+
+
+		if (holdDrive || flywheelToggle || controller[okapi::ControllerDigital::R1].isPressed()) { // if holding or flywheel on
 				allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
-			} else {
+				controller.setText(1, 0, "hold ");
+		} else {
 				allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
-			}
-			chassis->getModel()->tank(leftY, rightY);
+				controller.setText(1, 0, "coast");
 		}
+		chassis->getModel()->tank(leftY, rightY);
+
 		// chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
 		rate.delay(100_Hz);
 	}
