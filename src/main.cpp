@@ -78,13 +78,13 @@ void autonomous() {
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
 	// pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 
-	// if (auton == 0) {
-	// 	left();
-	// } else if (auton == 1) {
-	// 	// awp();
-	// } else if (auton == 2){
+	if (auton == 0) {
+		left();
+	} else if (auton == 1) {
+		// awp();
+	} else if (auton == 2){
 		right();
-	// }
+	}
 }
 
 void opcontrol() {

@@ -14,3 +14,5 @@ extern std::shared_ptr<okapi::OdomChassisController> chassis;
 
 // motorgroup of all motors for control over brake type etc.
 extern okapi::MotorGroup allMotors;
+extern okapi::MotorGroup leftMotors;
+extern okapi::MotorGroup rightMotors;

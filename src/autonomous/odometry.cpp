@@ -52,7 +52,7 @@ bool isMoving() {
   abs(okapi::Motor(kDriveLBPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRFPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRMPort).getActualVelocity()) +
-  abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 10;
+  abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 24;
 }
 
 bool isRed() {

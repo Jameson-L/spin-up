@@ -26,3 +26,5 @@ std::shared_ptr<okapi::OdomChassisController> chassis = okapi::ChassisController
 
 // motor group of all motors
 okapi::MotorGroup allMotors = okapi::MotorGroup({kDriveLFPort, kDriveLMPort, kDriveLBPort, kDriveRFPort, kDriveRMPort, kDriveRBPort});
+okapi::MotorGroup leftMotors = okapi::MotorGroup({kDriveLFPort, kDriveLMPort, kDriveLBPort});
+okapi::MotorGroup rightMotors = okapi::MotorGroup({kDriveRFPort, kDriveRMPort, kDriveRBPort});
