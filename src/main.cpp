@@ -183,7 +183,7 @@ void opcontrol() {
 		}
 
 		if (blooperOn) {
-			targetSpeed = 570;
+			targetSpeed = 500;
 			pros::c::adi_digital_write(kPneumaticBlooperPort, HIGH);
 		} else {
 			targetSpeed = 500;

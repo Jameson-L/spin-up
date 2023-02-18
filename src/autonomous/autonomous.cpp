@@ -72,11 +72,11 @@ void right() {
   // first disc and aim
   intake.controllerSet(1);
   odomDriveToPoint(1.8, 0, true, 0.2, 1, 1);
-  imuTurnToAngle(30);
+  imuTurnToAngle(33);
 
   // shoot 3
   intake.controllerSet(0);
-  pros::delay(1450);
+  pros::delay(1550);
   // awaitFlywheel();
   // intake.moveRelative(-235, 600);
   // pros::delay(1500);
@@ -90,21 +90,21 @@ void right() {
   // line of 2 discs and aim
   intake.controllerSet(1);
   odomDriveToPoint(4.7, -3, true, 1.4, 1, 1.5);
-  imuTurnToAngle(54);
+  imuTurnToAngle(57);
+  pros::delay(300);
+  intake.controllerSet(0);
   pros::delay(500);
-
   // shoot 2
   for (int i = 0; i < 2; i++) {
     // awaitFlywheel();
-    intake.controllerSet(0);
     intake.moveRelative(-235, 600);
-    pros::delay(900);
+    pros::delay(600);
   }
   // pros::delay(200);
   continueFlywheel = false;
 
   // to roller
-  odomDriveToPoint(0, 2.1, false, 0, 1, 1.6);
+  odomDriveToPoint(0, 2.15, false, 0, 1, 1.6);
 
   // roll
   imuTurnToAngle(0);
@@ -121,7 +121,7 @@ void right() {
 
 void left() {
   // start flywheel
-  speed = 600;
+  speed = 530;
   pros::Task startFlywheel(flywheelTask);
 
   // roller
@@ -152,7 +152,7 @@ void left() {
   odomDriveToPoint(2, 3.5, true, 1.6, 0.6, 0.5);
   intake.controllerSet(1);
   odomDriveToPoint(2, 3.5, true, 0, 0.3, 3.5);
-  imuTurnToAngle(-37);
+  imuTurnToAngle(-38);
   relative(1.7, 1, 1);
   intake.controllerSet(0);
   pros::delay(200);
@@ -160,7 +160,7 @@ void left() {
   for (int i = 0; i < 3; i++) {
     // awaitFlywheel();
     intake.moveRelative(-235, 600);
-    pros::delay(1100);
+    pros::delay(800);
   }
   continueFlywheel = false;
 }
