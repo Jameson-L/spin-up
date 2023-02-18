@@ -47,10 +47,10 @@ void initialize() {
 	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticExpansionPort2, OUTPUT);
 	pros::c::adi_pin_mode(kPneumaticBlooperPort, OUTPUT);
-	// pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
+	// // pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
 	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
 	pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW);
-	pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
+	pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
 	// vision.set_signature(1, &blue);
 	// vision.set_signature(2, &red);
 
@@ -58,15 +58,15 @@ void initialize() {
 	flywheel.setGearing(okapi::AbstractMotor::gearset::blue);
 	intake.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
 
-	pros::c::adi_pin_mode(4, INPUT); // auton selector
-	pros::ADIAnalogIn select = pros::ADIAnalogIn(4);
-	if (select.get_value() > 1120 && select.get_value() < 2048) {
-		rightAuton();
-	} else if (select.get_value() > 200 && select.get_value() < 1120) {
-		leftAuton();
-	} else if (select.get_value() > 2048 && select.get_value() < 200) {
-		awpAuton();
-	}
+	// pros::c::adi_pin_mode(3, INPUT); // auton selector
+	// pros::ADIAnalogIn select = pros::ADIAnalogIn(3);
+	// if (select.get_value() > 1380 && select.get_value() < 2450) {
+	// 	rightAuton();
+	// } else if (select.get_value() > 220 && select.get_value() < 1380) {
+	// 	leftAuton();
+	// } else if (select.get_value() > 2450 || select.get_value() < 220) {
+	// 	awpAuton();
+	// }
 }
 
 void disabled() {}
@@ -77,9 +77,9 @@ void autonomous() {
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold); // for tighter movements
 	flywheel.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 	// pros::c::adi_digital_write(kPneumaticIndexerPort, LOW); // default position
-	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
-	pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW); // default position
-	pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
+	// pros::c::adi_digital_write(kPneumaticExpansionPort, LOW); // default position
+	// pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW); // default position
+	// pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 
 	if (auton == 0) {
 		left();
@@ -88,6 +88,7 @@ void autonomous() {
 	} else if (auton == 2){
 		right();
 	}
+	// std::cout << auton;
 }
 
 void opcontrol() {
@@ -124,7 +125,7 @@ void opcontrol() {
 	// okapi::Motor RM = okapi::Motor(kDriveRMPort);
 	// okapi::Motor RB = okapi::Motor(kDriveRBPort);
 
-	// pros::ADIAnalogIn select = pros::ADIAnalogIn(4);
+	// pros::ADIAnalogIn select = pros::ADIAnalogIn(3);
 
 	// okapi::MedianFilter<10> filter;
 
@@ -183,10 +184,10 @@ void opcontrol() {
 
 		if (blooperOn) {
 			targetSpeed = 570;
-			// pros::c::adi_digital_write(kPneumaticBlooperPort, HIGH);
+			pros::c::adi_digital_write(kPneumaticBlooperPort, HIGH);
 		} else {
 			targetSpeed = 500;
-			// pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
+			pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
 		}
 
 		if (flywheelToggle) {
@@ -265,7 +266,7 @@ void opcontrol() {
 		}
 
 		// blooper controls
-		if (controller[okapi::ControllerDigital::A].changedToPressed()) {
+		if (controller[okapi::ControllerDigital::X].changedToPressed()) {
 			blooperOn = !blooperOn;
 		}
 

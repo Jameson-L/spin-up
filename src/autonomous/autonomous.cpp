@@ -59,7 +59,8 @@ void flywheelTask() {
 }
 
 void awaitFlywheel() {
-  while (flywheel.getActualVelocity() <= 590) {
+  okapi::Timer timer;
+  while (flywheel.getActualVelocity() <= 570 && timer.millis().convert(okapi::second) < 1.5) {
   }
 }
 
@@ -70,43 +71,52 @@ void right() {
 
   // first disc and aim
   intake.controllerSet(1);
-  odomDriveToPoint(1.8, 0, true, 0.2, 1, 1.5);
+  odomDriveToPoint(1.8, 0, true, 0.2, 1, 1);
   imuTurnToAngle(30);
 
   // shoot 3
+  intake.controllerSet(0);
+  pros::delay(1450);
+  // awaitFlywheel();
+  // intake.moveRelative(-235, 600);
+  // pros::delay(1500);
   for (int i = 0; i < 3; i++) {
-    awaitFlywheel();
-    intake.controllerSet(0);
-    intake.moveRelative(-245, 600);
-    pros::delay(500);
+    // awaitFlywheel();
+    intake.moveRelative(-235, 600);
+    pros::delay(900);
   }
-  pros::delay(200);
+  // pros::delay(200);
 
   // line of 2 discs and aim
   intake.controllerSet(1);
-  odomDriveToPoint(4.7, -3, true, 1.4, 1, 2.5);
+  odomDriveToPoint(4.7, -3, true, 1.4, 1, 1.5);
   imuTurnToAngle(54);
+  pros::delay(500);
 
   // shoot 2
   for (int i = 0; i < 2; i++) {
-    awaitFlywheel();
+    // awaitFlywheel();
     intake.controllerSet(0);
-    intake.moveRelative(-245, 600);
-    pros::delay(500);
+    intake.moveRelative(-235, 600);
+    pros::delay(900);
   }
-  pros::delay(200);
+  // pros::delay(200);
   continueFlywheel = false;
 
   // to roller
-  odomDriveToPoint(0.2, 2.5, false, 0, 1, 2);
+  odomDriveToPoint(0, 2.1, false, 0, 1, 1.6);
 
   // roll
-  odomDriveToPoint(-0.1, 2.5, false, 0, 1, 0.6);
-  leftMotors.moveVelocity(-20);
-  rightMotors.moveVelocity(-10);
-  intake.moveRelative(375, 600);
-  pros::delay(400);
-  allMotors.moveVelocity(0);
+  imuTurnToAngle(0);
+
+  intake.controllerSet(1);
+  relative(-2, 1, 0.4);
+  leftMotors.controllerSet(-0.25);
+  rightMotors.controllerSet(-0.5);
+  // intake.moveRelative(375, 600);
+  pros::delay(300);
+  intake.controllerSet(0);
+  allMotors.controllerSet(0);
 }
 
 void left() {
@@ -115,36 +125,45 @@ void left() {
   pros::Task startFlywheel(flywheelTask);
 
   // roller
-  leftMotors.moveVelocity(-20);
-  rightMotors.moveVelocity(-10);
-  intake.moveRelative(375, 600);
-  pros::delay(400);
-  allMotors.moveVelocity(0);
+  intake.controllerSet(1);
+  pros::delay(100);
+  relative(-2, 1, 0.1);
+  // leftMotors.controllerSet(-0.25);
+  // rightMotors.controllerSet(-0.5);
+  // intake.moveRelative(375, 600);
+  pros::delay(200);
+  intake.controllerSet(0);
+  allMotors.controllerSet(0);
 
   // aim
-  relative(0.5, 1, 0.7);
-  imuTurnToAngle(-5);
+  odomDriveToPoint(1.3, 0.5, true, 0, 1, 1);
+  imuTurnToAngle(-15);
+  pros::delay(1500);
 
   // shoot 3
-  for (int i = 0; i < 3; i++) {
-    awaitFlywheel();
-    intake.controllerSet(0);
-    intake.moveRelative(-245, 600);
-    pros::delay(500);
+  for (int i = 0; i < 2; i++) {
+    // awaitFlywheel();
+    intake.moveRelative(-235, 600);
+    pros::delay(1100);
   }
 
-  // line of discs and aim
+  // stack of discs and aim
+  intake.controllerSet(-1);
+  odomDriveToPoint(2, 3.5, true, 1.6, 0.6, 0.5);
   intake.controllerSet(1);
-  odomDriveToPoint(2.5, 2.5, 0, 0.5, 4);
-  imuTurnToAngle(-40);
+  odomDriveToPoint(2, 3.5, true, 0, 0.3, 3.5);
+  imuTurnToAngle(-37);
+  relative(1.7, 1, 1);
+  intake.controllerSet(0);
+  pros::delay(200);
 
   for (int i = 0; i < 3; i++) {
-    awaitFlywheel();
-    intake.controllerSet(0);
-    intake.moveRelative(-245, 600);
-    pros::delay(500);
+    // awaitFlywheel();
+    intake.moveRelative(-235, 600);
+    pros::delay(1100);
   }
   continueFlywheel = false;
 }
 
-void awp();
+void awp() {
+}

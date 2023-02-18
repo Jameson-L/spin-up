@@ -74,7 +74,7 @@ void imuTurnToAngle(double deg) {
   double init = timer.millis().convert(okapi::second); // saving initial time to calculate time elapsed
 
   while (!(abs(deg - getHeading(safe)) < 4 && !isMoving())) { // if close enough and stopped moving
-    if (timer.millis().convert(okapi::second) - init > 1) {
+    if (timer.millis().convert(okapi::second) - init > 0.7) {
       break; // break if too long
     }
 
