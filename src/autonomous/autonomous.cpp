@@ -66,7 +66,7 @@ void awaitFlywheel() {
 
 void right() {
   // starting flywheel
-  speed = 550;
+  speed = 560;
   pros::Task startFlywheel(flywheelTask);
 
   // first disc and aim
@@ -93,7 +93,7 @@ void right() {
   // line of 2 discs and aim
   intake.controllerSet(1);
   odomDriveToPoint(4.7, -3, true, 1.4, 1, 1.5);
-  imuTurnToAngle(55);
+  imuTurnToAngle(53);
   speed = 510;
   pros::delay(300);
   intake.controllerSet(0);
@@ -134,7 +134,7 @@ void stopIntake() {
 
 void left() {
   // start flywheel
-  speed = 530;
+  speed = 540;
   pros::Task startFlywheel(flywheelTask);
 
   // roller
@@ -150,7 +150,7 @@ void left() {
 
   // aim
   odomDriveToPoint(1.3, 0.5, true, 0, 1, 1);
-  imuTurnToAngle(-15);
+  imuTurnToAngle(-16);
   pros::delay(1500);
 
   // shoot 3
@@ -164,11 +164,11 @@ void left() {
 
   // stack of discs and aim
   // intake.controllerSet(-1);
-  speed = 510;
+  speed = 520;
   odomDriveToPoint(2, 3.5, true, 1.6, 0.6, 0.5);
   intake.controllerSet(1);
   odomDriveToPoint(2, 3.5, true, 0, 0.3, 3.5);
-  imuTurnToAngle(-38);
+  imuTurnToAngle(-37);
   // pros::Task stop(stopIntake);
   relative(1.7, 1, 1);
   intake.controllerSet(0);
