@@ -62,7 +62,7 @@ bool isBlue() {
   return optical.getHue() < 230 && optical.getHue() > 210;
 }
 
-void imuTurnToAngle(double deg) {
+void imuTurnToAngle(double deg, bool fast) {
   bool safe = deg < -150 || deg > 150; // checking if degree is dangerous
   if (deg < -150) {
     deg += 360; // remapping
@@ -74,7 +74,7 @@ void imuTurnToAngle(double deg) {
   double init = timer.millis().convert(okapi::second); // saving initial time to calculate time elapsed
 
   while (!(abs(deg - getHeading(safe)) < 4 && !isMoving())) { // if close enough and stopped moving
-    if (timer.millis().convert(okapi::second) - init > 0.7) {
+    if (timer.millis().convert(okapi::second) - init > 0.7 || (fast && (abs(deg - getHeading(safe)) < 4))) {
       break; // break if too long
     }
 
@@ -89,7 +89,7 @@ void imuTurnToAngle(double deg) {
   // setting current degree to imu reading to minimize odometry drift
 }
 
-void odomDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time) {
+void odomDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time, bool fastTurn) {
   // storing initial x and y for later jCurve call
   double targetX = x;
   double targetY = y;
@@ -113,7 +113,7 @@ void odomDriveToPoint(double x, double y, bool forward, double offset, double sp
     }
   }
 
-  imuTurnToAngle(angle); // turn to the desired angle
+  imuTurnToAngle(angle, fastTurn); // turn to the desired angle
   jCurve(targetX, targetY, forward, offset, speedMultiplier, time); // let this function handle the rest
 }
 
@@ -134,7 +134,7 @@ void jCurve(double x, double y, bool forward, double offset, double speedMultipl
   double turnPidValue = 0; // turn
   double turnStrength = 0.9; // how sharp the turns can be; bigger = turn more
   double dX, dY; // current displacement
-  double encoderReading = 1000000000.0; // arbitrarily large starting value so the while loop can start without breaking due to unitialized variable
+  double encoderReading = 100000.0; // arbitrarily large starting value so the while loop can start without breaking due to unitialized variable
   double finalDriveValue; // drive value after speed calculations etc.
 
   // initial x and y to calculate displacement
@@ -221,7 +221,7 @@ void relative(double x, double speedMultiplier, double time) {
 
   double chassisPidValue;
   double dX, dY; // current displacement
-  double encoderReading = 1000000000.0;
+  double encoderReading = 100000.0;
 
   // initial x and y to calculate displacement
   double startX = chassis->getState().x.convert(okapi::foot);

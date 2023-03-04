@@ -44,13 +44,17 @@ void initialize() {
 
 	// setting pin modes and starting positions
 	// pros::c::adi_pin_mode(kPneumaticIndexerPort, OUTPUT);
-	pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
-	pros::c::adi_pin_mode(kPneumaticExpansionPort2, OUTPUT);
-	pros::c::adi_pin_mode(kPneumaticBlooperPort, OUTPUT);
+	// pros::c::adi_pin_mode(kPneumaticExpansionPort, OUTPUT);
+	// pros::c::adi_pin_mode(kPneumaticExpansionPort2, OUTPUT);
+	// pros::c::adi_pin_mode(kPneumaticBlooperPort, OUTPUT);
 	// // pros::c::adi_digital_write(kPneumaticIndexerPort, LOW);
-	pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
-	pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW);
-	pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
+	// pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
+	// pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW);
+	// pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
+	expansion.set_value(0);
+	blooper.set_value(0);
+	compression1.set_value(0);
+	compression2.set_value(0);
 	// vision.set_signature(1, &blue);
 	// vision.set_signature(2, &red);
 
@@ -102,16 +106,16 @@ void opcontrol() {
 	double rightY; // right joystick y direction
 	bool flywheelToggle = false; // false = off
 	bool expandToggle = false; // false = off
-	bool expandToggle2 = false; // false = off
 	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
 	bool holdDrive = false;
 	bool hold = false; // if this is true, it means ur holding L2 and it should shoot one disc while blocking regular intake control. if you release L2, even if the thing hasnt finished moving, it works
-	chassisVisionPid.reset();
+	// chassisVisionPid.reset();
 	// double error;
 	// double prevError = 1;
 	// double tbh = targetSpeed / 600.0; // maybe tune this, unlikely
 	// double output = 0;
 	bool blooperOn = true;
+	bool compressionUp = false;
 
 	// setting all motors to coast
 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
@@ -184,10 +188,10 @@ void opcontrol() {
 
 		if (blooperOn) {
 			targetSpeed = 500;
-			pros::c::adi_digital_write(kPneumaticBlooperPort, HIGH);
+			blooper.set_value(1);
 		} else {
 			targetSpeed = 500;
-			pros::c::adi_digital_write(kPneumaticBlooperPort, LOW);
+			blooper.set_value(0);
 		}
 
 		if (flywheelToggle) {
@@ -250,16 +254,22 @@ void opcontrol() {
 		if (controller[okapi::ControllerDigital::L1].isPressed()) {
 			hold = false;
 			intake.controllerSet(1);
+			compression1.set_value(0);
 		} else if (controller[okapi::ControllerDigital::R2].isPressed()) {
 			hold = false;
 			intake.controllerSet(-1);
+			compression1.set_value(1);
+			compressionUp = false;
 		} else if (!hold) {
 			intake.controllerSet(0);
+			compression1.set_value(0);
 		}
 
 		if (controller[okapi::ControllerDigital::L2].changedToPressed()) {
 			hold = true;
 			intake.moveRelative(-240, 600);
+			compression1.set_value(1);
+			compressionUp = false;
 		}
 		if (!controller[okapi::ControllerDigital::L2].isPressed()) {
 			hold = false;
@@ -270,25 +280,23 @@ void opcontrol() {
 			blooperOn = !blooperOn;
 		}
 
-		// expansion controls (2)
+		// expansion controls
 		if (controller[okapi::ControllerDigital::up].changedToPressed()) {
-			expandToggle = !expandToggle;
-			expandToggle2 = expandToggle;
+			compressionUp = !compressionUp;
 		}
 		if (controller[okapi::ControllerDigital::down].changedToPressed()) {
-			expandToggle2 = !expandToggle2;
+			expandToggle = !expandToggle;
+		}
+		if (compressionUp) {
+			compression2.set_value(1);
+		} else {
+			compression2.set_value(0);
 		}
 
 		if (expandToggle) {
-			pros::c::adi_digital_write(kPneumaticExpansionPort, HIGH);
+			expansion.set_value(0);
 		} else {
-			pros::c::adi_digital_write(kPneumaticExpansionPort, LOW);
-		}
-
-		if (expandToggle2) {
-			pros::c::adi_digital_write(kPneumaticExpansionPort2, HIGH);
-		} else {
-			pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW);
+			expansion.set_value(1);
 		}
 
 		// set power variables

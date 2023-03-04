@@ -7,7 +7,7 @@
 
 bool continueFlywheel = false;
 double speed = 600;
-double tbhGain = 0.00002;// tune this, try 0.00003 LOWER TARGET SPEED = HIGHER TBHGAIN
+// double tbhGain = 0.00002;// tune this, try 0.00003 LOWER TARGET SPEED = HIGHER TBHGAIN
 
 
 // task functions for auton
@@ -58,11 +58,11 @@ void flywheelTask() {
   }
 }
 
-void awaitFlywheel() {
-  okapi::Timer timer;
-  while (flywheel.getActualVelocity() <= 570 && timer.millis().convert(okapi::second) < 1.5) {
-  }
-}
+// void awaitFlywheel() {
+//   okapi::Timer timer;
+//   while (flywheel.getActualVelocity() <= 570 && timer.millis().convert(okapi::second) < 1.5) {
+//   }
+// }
 
 void right() {
   // starting flywheel
