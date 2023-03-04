@@ -85,13 +85,14 @@ void autonomous() {
 	// pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW); // default position
 	// pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 
-	if (auton == 0) {
-		left();
-	} else if (auton == 1) {
-		awp();
-	} else if (auton == 2){
-		right();
-	}
+	// if (auton == 0) {
+	// 	left();
+	// } else if (auton == 1) {
+	// 	awp();
+	// } else if (auton == 2){
+	// 	right();
+	// }
+	skills();
 	// std::cout << auton;
 }
 
@@ -104,6 +105,7 @@ void opcontrol() {
 	continueFlywheel = false;
 	double leftY; // left joystick y direction
 	double rightY; // right joystick y direction
+	// double rightX; // right joystick x direction
 	bool flywheelToggle = false; // false = off
 	bool expandToggle = false; // false = off
 	double targetSpeed = 500; // target speed of flywheel - blue is 600 max
@@ -306,6 +308,7 @@ void opcontrol() {
 		// set power variables
 		leftY = controller.getAnalog(okapi::ControllerAnalog::leftY);
 		rightY = controller.getAnalog(okapi::ControllerAnalog::rightY);
+		// rightX = controller.getAnalog(okapi::ControllerAnalog::rightX);
 
 		// if (controller[okapi::ControllerDigital::A].isPressed()) {
 		// 	allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
@@ -328,6 +331,11 @@ void opcontrol() {
 				controller.setText(1, 0, "coast");
 		}
 		chassis->getModel()->tank(leftY, rightY);
+		// if (leftY >= 0) {
+		// 	chassis->getModel()->arcade(leftY, rightX);
+		// } else {
+		// 	chassis->getModel()->arcade(leftY, -rightX);
+		// }
 
 		// chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
 		rate.delay(100_Hz);

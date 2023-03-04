@@ -41,7 +41,8 @@ speedMultiplier = max speed
 time = max time spent before breaking
 */
 
-void odomDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4, bool fastTurn = false);
+void odomDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
+void fastDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
 // in-place turn, then translation to any point
 void jCurve(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
 // curve to any point in a J-shaped path (turn while driving)

@@ -10,3 +10,4 @@ extern double tbhGain;
 void left(); // left side auton
 void right(); // right side auton
 void awp(); // solo win point
+void skills(); // skills

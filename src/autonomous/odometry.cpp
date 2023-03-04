@@ -74,7 +74,7 @@ void imuTurnToAngle(double deg, bool fast) {
   double init = timer.millis().convert(okapi::second); // saving initial time to calculate time elapsed
 
   while (!(abs(deg - getHeading(safe)) < 4 && !isMoving())) { // if close enough and stopped moving
-    if (timer.millis().convert(okapi::second) - init > 0.7 || (fast && (abs(deg - getHeading(safe)) < 4))) {
+    if (timer.millis().convert(okapi::second) - init > 0.7 || (fast && (abs(deg - getHeading(safe)) < 8))) {
       break; // break if too long
     }
 
@@ -89,7 +89,7 @@ void imuTurnToAngle(double deg, bool fast) {
   // setting current degree to imu reading to minimize odometry drift
 }
 
-void odomDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time, bool fastTurn) {
+void odomDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time) {
   // storing initial x and y for later jCurve call
   double targetX = x;
   double targetY = y;
@@ -113,7 +113,35 @@ void odomDriveToPoint(double x, double y, bool forward, double offset, double sp
     }
   }
 
-  imuTurnToAngle(angle, fastTurn); // turn to the desired angle
+  imuTurnToAngle(angle, false); // turn to the desired angle
+  jCurve(targetX, targetY, forward, offset, speedMultiplier, time); // let this function handle the rest
+}
+
+void fastDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time) {
+  // storing initial x and y for later jCurve call
+  double targetX = x;
+  double targetY = y;
+
+  // initial in-place turn:
+  x -= chassis->getState().x.convert(okapi::foot); // getting target displacement x
+  y -= chassis->getState().y.convert(okapi::foot); // getting target displacement y
+
+  double angle = atan(y / x) * 180 / M_PI; // absolute angle needed to turn
+  if (forward) { // tangent function domain/range checking and corrections
+    if (x < 0 && y > 0) {
+      angle += 180;
+    } else if (x < 0 && y < 0) {
+      angle -= 180;
+    }
+  } else {
+    if (x > 0 && y > 0) {
+      angle -= 180;
+    } else if (x > 0 && y < 0) {
+      angle += 180;
+    }
+  }
+
+  imuTurnToAngle(angle, true); // turn to the desired angle
   jCurve(targetX, targetY, forward, offset, speedMultiplier, time); // let this function handle the rest
 }
 

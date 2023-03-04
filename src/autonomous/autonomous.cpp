@@ -187,3 +187,32 @@ void left() {
 
 void awp() {
 }
+
+void skills () {
+  chassis->setState({1_ft, 3_ft});
+  speed = 480;
+  pros::Task startFlywheel(flywheelTask);
+  intake.controllerSet(1);
+  pros::delay(400);
+  relative(-2, 0.3, 0.5);
+  // pros::delay(200);
+  // intake.controllerSet(0);
+  jCurve(2, 0.8);
+  imuTurnToAngle(90);
+  intake.controllerSet(1);
+  pros::delay(100);
+  relative(-2, 0.3, 0.8);
+  // pros::delay(100);
+  intake.controllerSet(0);
+  jCurve(6, 1);
+  imuTurnToAngle(4);
+  compression1.set_value(1);
+  intake.controllerSet(-1);
+  pros::delay(1200);
+  compression1.set_value(0);
+  intake.controllerSet(1);
+  fastDriveToPoint(4.6, 2.4);
+  fastDriveToPoint(6.6, 4.5);
+  imuTurnToAngle(-45);
+  intake.controllerSet(-1);
+}
