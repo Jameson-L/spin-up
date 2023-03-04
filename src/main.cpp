@@ -258,8 +258,9 @@ void opcontrol() {
 		} else if (controller[okapi::ControllerDigital::R2].isPressed()) {
 			hold = false;
 			intake.controllerSet(-1);
-			compression1.set_value(1);
-			compressionUp = false;
+			if (!compressionUp && flywheel.getTargetVelocity() > 0) {
+				compression1.set_value(1);
+			}
 		} else if (!hold) {
 			intake.controllerSet(0);
 			compression1.set_value(0);
@@ -268,8 +269,9 @@ void opcontrol() {
 		if (controller[okapi::ControllerDigital::L2].changedToPressed()) {
 			hold = true;
 			intake.moveRelative(-240, 600);
-			compression1.set_value(1);
-			compressionUp = false;
+			if (!compressionUp && flywheel.getTargetVelocity() > 0) {
+				compression1.set_value(1);
+			}
 		}
 		if (!controller[okapi::ControllerDigital::L2].isPressed()) {
 			hold = false;
@@ -288,8 +290,10 @@ void opcontrol() {
 			expandToggle = !expandToggle;
 		}
 		if (compressionUp) {
+			compression1.set_value(0);
 			compression2.set_value(1);
 		} else {
+			// compression1.set_value(1);
 			compression2.set_value(0);
 		}
 
