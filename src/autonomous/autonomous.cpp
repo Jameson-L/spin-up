@@ -190,7 +190,7 @@ void awp() {
 
 void skills () {
   chassis->setState({1_ft, 3_ft});
-  speed = 480;
+  speed = 460;
   pros::Task startFlywheel(flywheelTask);
   intake.controllerSet(1);
   pros::delay(400);
@@ -200,19 +200,57 @@ void skills () {
   jCurve(2, 0.8);
   imuTurnToAngle(90);
   intake.controllerSet(1);
-  pros::delay(100);
-  relative(-2, 0.3, 0.8);
   // pros::delay(100);
-  intake.controllerSet(0);
+  relative(-2, 0.7, 0.2);
+  relative(-2, 0.3, 0.5);
+  // pros::delay(100);
+  // intake.controllerSet(0);
   jCurve(6, 1);
-  imuTurnToAngle(4);
+  imuTurnToAngle(10);
   compression1.set_value(1);
-  intake.controllerSet(-1);
-  pros::delay(1200);
+  intake.controllerSet(-0.4);
+  pros::delay(2000);
   compression1.set_value(0);
   intake.controllerSet(1);
-  fastDriveToPoint(4.6, 2.4);
-  fastDriveToPoint(6.6, 4.5);
-  imuTurnToAngle(-45);
-  intake.controllerSet(-1);
+  speed = 470;
+  fastDriveToPoint(4.9, 2.6);
+  fastDriveToPoint(7.1, 4.9, true, 0, 0.7);
+  imuTurnToAngle(-53);
+  compression1.set_value(1);
+  intake.controllerSet(-0.4);
+  compression1.set_value(0);
+  pros::delay(2000);
+  intake.controllerSet(1);
+  fastDriveToPoint(10.6, 8.8, true, 0, 0.7, 0.3);
+  fastDriveToPoint(10.6, 8.8, true, 0, 0.3);
+  intake.controllerSet(0);
+  imuTurnToAngle(-180);
+  intake.controllerSet(1);
+  speed = 600;
+  relative(-2, 0.7, 0.2);
+  relative(-2, 0.3, 0.5);
+  intake.controllerSet(0);
+  relative(1, 1, 0.5);
+  fastDriveToPoint(11.8, 7);
+  imuTurnToAngle(-100);
+  for (int i = 0; i < 2; i++) {
+    compression1.set_value(1);
+    compression2.set_value(0);
+    intake.controllerSet(-0.3);
+    pros::delay(2000);
+    intake.controllerSet(0);
+    compression1.set_value(0);
+    compression2.set_value(1);
+  }
+  compression1.set_value(1);
+  compression2.set_value(0);
+  intake.controllerSet(-0.3);
+  pros::delay(2000);
+  intake.controllerSet(0);
+  compression1.set_value(0);
+  jCurve(11.3, 11.3, false);
+  imuTurnToAngle(-90);
+  intake.controllerSet(1);
+  relative(-2, 0.7, 0.2);
+  relative(-2, 0.3, 0.5);
 }
