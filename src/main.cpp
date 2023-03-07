@@ -177,10 +177,14 @@ void opcontrol() {
 		// std::cout << select.get_value() << "\n";
 
 		if (controller.getAnalog(okapi::ControllerAnalog::leftX) == -1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == 1) {
-			holdDrive = false;
+			// holdDrive = false;
+			allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+			controller.setText(1, 0, "coast");
 		}
 		if (controller.getAnalog(okapi::ControllerAnalog::leftX) == 1 && controller.getAnalog(okapi::ControllerAnalog::rightX) == -1) {
-			holdDrive = true;
+			// holdDrive = true;
+			allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
+			controller.setText(1, 0, "hold ");
 		}
 
 		// flywheel toggling
@@ -323,13 +327,11 @@ void opcontrol() {
 		// }
 
 
-		if (holdDrive || flywheelToggle || controller[okapi::ControllerDigital::R1].isPressed()) { // if holding or flywheel on
-				allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
-				controller.setText(1, 0, "hold ");
-		} else {
-				allMotors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
-				controller.setText(1, 0, "coast");
-		}
+		// if (holdDrive || flywheelToggle || controller[okapi::ControllerDigital::R1].isPressed()) { // if holding or flywheel on
+		//
+		// } else {
+		//
+		// }
 		chassis->getModel()->tank(leftY, rightY);
 		// if (leftY >= 0) {
 		// 	chassis->getModel()->arcade(leftY, rightX);
