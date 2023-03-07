@@ -223,26 +223,15 @@ void skills () {
   intake.controllerSet(1);
   fastDriveToPoint(10.9, 8.8, true, 0, 0.7, 0.7);
   jCurve(10.9, 9, true, 0, 0.3);
-  intake.controllerSet(0);
   imuTurnToAngle(180);
-  intake.controllerSet(1);
   speed = 520;
   relative(-2, 0.7, 0.2);
   relative(-2, 0.3, 0.5);
-  blooper.set_value(1);
   while (getHeading(false) > 0 || getHeading(false) < -150) {
     chassis->getModel()->tank(1, 0);
   }
-  jCurve(11.1, 3.3);
-  imuTurnToAngle(-115);
-  compression1.set_value(1);
-  intake.controllerSet(-1);
-  pros::delay(1200);
-  intake.controllerSet(0);
-  blooper.set_value(0);
-  compression1.set_value(0);
-  compression2.set_value(1);
-  odomDriveToPoint(11.6, 5.45, false, 0, 0.3);
+  jCurve(11.2, 4);
+  odomDriveToPoint(11.65, 5.75, false, 0, 0.6);
   imuTurnToAngle(-100);
   pros::delay(3000);
   compression1.set_value(1);
@@ -262,7 +251,7 @@ void skills () {
   while (getHeading(false) < 0 || getHeading(false) > 140) {
     chassis->getModel()->tank(0, 1);
   }
-  jCurve(10.5, 9.5, true);
+  jCurve(9, 11, true);
   imuTurnToAngle(-90);
   intake.controllerSet(1);
   relative(-2, 0.7, 0.2);
