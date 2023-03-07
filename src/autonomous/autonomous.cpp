@@ -194,7 +194,7 @@ void skills () {
   pros::Task startFlywheel(flywheelTask);
   intake.controllerSet(1);
   pros::delay(400);
-  relative(-2, 0.15, 0.6);
+  relative(-2, 0.2, 0.6);
   // pros::delay(200);
   // intake.controllerSet(0);
   jCurve(2, 0.8);
@@ -202,7 +202,7 @@ void skills () {
   intake.controllerSet(1);
   // pros::delay(100);
   relative(-2, 0.7, 0.2);
-  relative(-2, 0.15, 0.4);
+  relative(-2, 0.2, 0.4);
   // pros::delay(100);
   // intake.controllerSet(0);
   jCurve(6, 1);
@@ -221,28 +221,28 @@ void skills () {
   compression1.set_value(0);
   pros::delay(2000);
   intake.controllerSet(1);
-  fastDriveToPoint(10.8, 8.8, true, 0, 0.7, 0.6);
-  jCurve(10.8, 9, true, 0, 0.3);
+  fastDriveToPoint(10.9, 8.8, true, 0, 0.7, 0.7);
+  jCurve(10.9, 9, true, 0, 0.3);
   intake.controllerSet(0);
   imuTurnToAngle(180);
   intake.controllerSet(1);
-  speed = 400;
+  speed = 520;
   relative(-2, 0.7, 0.2);
   relative(-2, 0.3, 0.5);
-  while (getHeading(false) > 0 || getHeading(false) < -80) {
+  blooper.set_value(1);
+  while (getHeading(false) > 0 || getHeading(false) < -150) {
     chassis->getModel()->tank(1, 0);
   }
-  blooper.set_value(1);
-  jCurve(11.4, 4);
-  imuTurnToAngle(-105);
+  jCurve(11.1, 3.3);
+  imuTurnToAngle(-115);
   compression1.set_value(1);
   intake.controllerSet(-1);
   pros::delay(1200);
-  blooper.set_value(1);
   intake.controllerSet(0);
+  blooper.set_value(0);
   compression1.set_value(0);
   compression2.set_value(1);
-  odomDriveToPoint(11.75, 5.5, false, 0, 0.3);
+  odomDriveToPoint(11.6, 5.45, false, 0, 0.3);
   imuTurnToAngle(-100);
   pros::delay(3000);
   compression1.set_value(1);
@@ -259,7 +259,10 @@ void skills () {
   pros::delay(2000);
   intake.controllerSet(0);
   compression1.set_value(0);
-  jCurve(10.5, 9.5, false);
+  while (getHeading(false) < 0 || getHeading(false) > 140) {
+    chassis->getModel()->tank(0, 1);
+  }
+  jCurve(10.5, 9.5, true);
   imuTurnToAngle(-90);
   intake.controllerSet(1);
   relative(-2, 0.7, 0.2);
