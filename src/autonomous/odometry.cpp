@@ -52,7 +52,7 @@ bool isMoving() {
   abs(okapi::Motor(kDriveLBPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRFPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRMPort).getActualVelocity()) +
-  abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 24;
+  abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 16;
 }
 
 bool isRed() {
@@ -138,6 +138,8 @@ void imuTurnToAngle(double deg, bool fast, int direction) {
   chassis->getModel()->tank(0, 0); // stopping the bot completely
 
   chassis->setState({chassis->getState().x, chassis->getState().y, getHeading() * okapi::degree});
+
+  // pros::delay(100);
   // setting current degree to imu reading to minimize odometry drift
 }
 

@@ -251,3 +251,20 @@ void skills () {
   relative(-2, 0.7, 0.2);
   relative(-2, 0.3, 0.5);
 }
+
+void turns() {
+  imuTurnToAngle(180);
+  imuTurnToAngle(90);
+  imuTurnToAngle(-90);
+  imuTurnToAngle(-170);
+  imuTurnToAngle(170);
+  imuTurnToAngle(45);
+  imuTurnToAngle(-45);
+  imuTurnToAngle(0);
+  pros::delay(500);
+  imuTurnToAngle(90, false, -1);
+  imuTurnToAngle(180, false, 1);
+  imuTurnToAngle(-90, false, -1);
+  imuTurnToAngle(45, false, 0);
+  imuTurnToAngle(0);
+}
