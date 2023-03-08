@@ -23,9 +23,12 @@ extern okapi::IterativePosPIDController chassisSwingPid; // turning with only on
 extern okapi::IterativePosPIDController chassisVisionPid; // for auto aim
 
 // functions
-double getHeading(bool safe = false); // returns current imu reading (-180, 180),
-                                      // safe is used to protect PID from 180 to -180 jump
-bool isMoving(); // if the bot is within a certain RPM threshold it is considered stopped
+// returns current imu reading within [-180, 180]
+double getHeading(); 
+// Return the angle difference between the robot and the target
+double getAngleDiff(double target, int direction = 0); 
+// if the bot is within a certain RPM threshold it is considered stopped
+bool isMoving(); 
 
 bool isRed();
 bool isBlue();
@@ -41,16 +44,18 @@ speedMultiplier = max speed
 time = max time spent before breaking
 */
 
-void odomDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
-void fastDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
 // in-place turn, then translation to any point
-void jCurve(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
+void odomDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4); 
+// in-place turn, then translation to any point
+void fastDriveToPoint(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4);
 // curve to any point in a J-shaped path (turn while driving)
-void imuTurnToAngle(double deg, bool fast=false);
-// turn to any angle
-void relative(double x, double speedMultiplier = 1, double time = 2);
+void jCurve(double x, double y, bool forward=true, double offset = 0.0, double speedMultiplier = 1, double time = 4, int direction = 0);
+ // turn to any angle
+void imuTurnToAngle(double deg, bool fast=false, int direction = 0);
 // translate forward/backward any amount of distance, regardless of position
+void relative(double x, double speedMultiplier = 1, double time = 2);
+// turn towards any point
 void turnToPoint(double x, double y);
-// turn to any angle
-void stepAutoAim();
 // for use in a loop
+void stepAutoAim();
+

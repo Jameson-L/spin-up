@@ -26,21 +26,21 @@ okapi::IterativePosPIDController chassisSwingPid = okapi::IterativeControllerFac
 okapi::IterativePosPIDController chassisVisionPid = okapi::IterativeControllerFactory::posPID(0.005, 0.0, 0.0);
 
 
-double getHeading(bool safe) {
-  if (!safe) {
-    if (!(imu1.controllerGet() <= 180 && imu1.controllerGet() >= -180)) { // checking if its numerical; if not, imu is unplugged
-      int temp = std::fmod(chassis->getState().theta.convert(okapi::degree), 360);
-      if (temp < -180) {
-        return temp + 360;
-      } else if (temp > 180) {
-        return temp - 360;
-      }
-      return temp;
-    } else {
-      return (imu1.controllerGet() + imu1.controllerGet()) / 2.0; // average of the two, but only using one for now
+double getHeading() {
+  if (!(imu1.controllerGet() <= 180 && imu1.controllerGet() >= -180)) { // checking if its numerical; if not, imu is unplugged
+    // Use odometry angle as a backup
+    int temp = std::fmod(chassis->getState().theta.convert(okapi::degree), 360);
+
+    // Remap to [-180, 180]
+    if (temp < -180) {
+      return temp + 360;
+    } else if (temp > 180) {
+      return temp - 360;
     }
+
+    return temp;
   } else {
-    return std::fmod((getHeading(false) + 360), 360); // mapping the readings to a safer interval
+    return (imu1.controllerGet() + imu1.controllerGet()) / 2.0; // average of the two, but only using one for now
   }
 }
 
@@ -62,30 +62,82 @@ bool isBlue() {
   return optical.getHue() < 230 && optical.getHue() > 210;
 }
 
-void imuTurnToAngle(double deg, bool fast) {
-  bool safe = deg < -150 || deg > 150; // checking if degree is dangerous
+double getAngleDiff(double target, int direction) { 
+  // direction = -1: force turn left
+  // direction = 0: turn shortest
+  // direction = 1: force turn right
+
+  // Covers all 4 different mapping types
+  // One is left out because adding 360deg to both is equivalent to doing nothing
+  double angle1 = getHeading() - target + 360;
+  double angle2 = getHeading() - target - 360;
+  double angle3 = getHeading() - target;
+
+  double leftAngle; // Store left turn angle (positive sign)
+  double rightAngle; // Store right turn angle (negative sign)
+
+  // Temp variables for loop
+  double angles[3] = {angle1, angle2, angle3}; 
+  double angle; 
+
+  for(int i = 0; i < 3; ++i){
+    angle = angles[i];
+
+    if(signbit(angle) && abs(angle) < 360) { // If angle is negative and within (-360, 360)
+      rightAngle = angle;
+    } else if(!signbit(angle) && abs(angle) < 360) { // If angle is positive and within (-360, 360)
+      leftAngle = angle;
+    }
+  }
+
+  double smallest; // Store the angle with the least absolute value
+  if(abs(leftAngle) < abs(rightAngle)) { // Left is smaller than right
+    smallest = leftAngle;
+  } else { // Right is at least as small as left
+    smallest = rightAngle;
+  }
+
+  if(direction == -1) {
+    return leftAngle;
+  } else if(direction == 1) {
+    return rightAngle;
+  }
+  return smallest;
+}
+
+void imuTurnToAngle(double deg, bool fast, int direction) {
+/*   bool safe = deg < -150 || deg > 150; // checking if degree is dangerous
   if (deg < -150) {
     deg += 360; // remapping
   }
-  chassisTurnPid.setTarget(deg); // pid target
+  chassisTurnPid.setTarget(deg); // pid target */
+
+  chassisTurnPid.setTarget(0);
+  double angleDiff = 1000000000.0;
 
   double chassisPidValue; // temporary variable to store pid value
   okapi::Timer timer; // timing to ensure it doesnt take too long
   double init = timer.millis().convert(okapi::second); // saving initial time to calculate time elapsed
 
-  while (!(abs(deg - getHeading(safe)) < 4 && !isMoving())) { // if close enough and stopped moving
-    if (timer.millis().convert(okapi::second) - init > 0.7 || (fast && (abs(deg - getHeading(safe)) < 8))) {
+  double angle1;
+  double angle2;
+  double angle3;
+
+  while (!(abs(angleDiff) < 4 && !isMoving())) { // if close enough and stopped moving
+    if (timer.millis().convert(okapi::second) - init > 0.7 || (fast && (abs(angleDiff) < 8))) {
       break; // break if too long
     }
 
-    chassisPidValue = chassisTurnPid.step(getHeading(safe)); // stepping the pid with current reading
+    angleDiff = getAngleDiff(deg, direction);
+
+    chassisPidValue = chassisTurnPid.step(angleDiff); // stepping the pid with current reading
     chassis->getModel()->tank(chassisPidValue, -1*chassisPidValue); // sending power to the drivetrain
     rate.delay(100_Hz); // need consistent timing for pid loop
   }
   chassisTurnPid.reset(); // resetting pid
   chassis->getModel()->tank(0, 0); // stopping the bot completely
 
-  chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
+  chassis->setState({chassis->getState().x, chassis->getState().y, getHeading() * okapi::degree});
   // setting current degree to imu reading to minimize odometry drift
 }
 
@@ -145,7 +197,7 @@ void fastDriveToPoint(double x, double y, bool forward, double offset, double sp
   jCurve(targetX, targetY, forward, offset, speedMultiplier, time); // let this function handle the rest
 }
 
-void jCurve(double x, double y, bool forward, double offset, double speedMultiplier, double time) {
+void jCurve(double x, double y, bool forward, double offset, double speedMultiplier, double time, int direction) {
   // storing initial target x and y for later
   double targetX = x;
   double targetY = y;
@@ -174,7 +226,7 @@ void jCurve(double x, double y, bool forward, double offset, double speedMultipl
 
   while (!(abs(target - encoderReading) < 0.25 && !isMoving())) { // if distance small enough and stopped moving
     // setting odometry angle to imu reading to minimize drift
-    chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
+    chassis->setState({chassis->getState().x, chassis->getState().y, getHeading() * okapi::degree});
     if (timer.millis().convert(okapi::second) - init > time) {
       break; // break if too long
     }
@@ -197,13 +249,9 @@ void jCurve(double x, double y, bool forward, double offset, double speedMultipl
         angle += 180;
       }
     }
-    // if angle is dangerous (180 jumping to -180), remap to safer interval
-    bool safe = angle < -150 || angle > 150;
-    if (angle < -150) {
-      angle += 360;
-    }
-    chassisTurnPid.setTarget(angle); // angle pid target
-    turnPidValue = chassisTurnPid.step(getHeading(safe)); // stepping the turn pid based on current reading
+    
+    chassisTurnPid.setTarget(0); // angle pid target
+    turnPidValue = chassisTurnPid.step(getAngleDiff(angle, direction)); // stepping the turn pid based on current reading
 
     // calculating current distance to target:
     dX = chassis->getState().x.convert(okapi::foot) - startX; // current displacement x
@@ -239,7 +287,7 @@ void jCurve(double x, double y, bool forward, double offset, double speedMultipl
   chassis->getModel()->tank(0, 0); // stopping the bot completely
 
   // one more odom angle correction
-  chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
+  chassis->setState({chassis->getState().x, chassis->getState().y, getHeading() * okapi::degree});
 }
 
 void relative(double x, double speedMultiplier, double time) {
@@ -260,7 +308,7 @@ void relative(double x, double speedMultiplier, double time) {
   double finalDriveValue = 0;
 
   while (!(abs(target - encoderReading) < 0.25 && !isMoving())) {
-    chassis->setState({chassis->getState().x, chassis->getState().y, getHeading(false) * okapi::degree});
+    chassis->setState({chassis->getState().x, chassis->getState().y, getHeading() * okapi::degree});
     dX = chassis->getState().x.convert(okapi::foot) - startX;
     dY = chassis->getState().y.convert(okapi::foot) - startY;
     std::cout << chassis->getState().x.convert(okapi::foot) << "\n";
