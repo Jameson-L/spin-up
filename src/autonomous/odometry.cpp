@@ -52,7 +52,7 @@ bool isMoving() {
   abs(okapi::Motor(kDriveLBPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRFPort).getActualVelocity()) +
   abs(okapi::Motor(kDriveRMPort).getActualVelocity()) +
-  abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 16;
+  abs(okapi::Motor(kDriveRBPort).getActualVelocity()) > 24;
 }
 
 bool isRed() {
@@ -119,12 +119,8 @@ void imuTurnToAngle(double deg, bool fast, int direction) {
   okapi::Timer timer; // timing to ensure it doesnt take too long
   double init = timer.millis().convert(okapi::second); // saving initial time to calculate time elapsed
 
-  double angle1;
-  double angle2;
-  double angle3;
-
   while (!(abs(angleDiff) < 4 && !isMoving())) { // if close enough and stopped moving
-    if (timer.millis().convert(okapi::second) - init > 0.7 || (fast && (abs(angleDiff) < 8))) {
+    if (timer.millis().convert(okapi::second) - init > 1.0 || (fast && (abs(angleDiff) < 8))) {
       break; // break if too long
     }
 
@@ -143,7 +139,7 @@ void imuTurnToAngle(double deg, bool fast, int direction) {
   // setting current degree to imu reading to minimize odometry drift
 }
 
-void odomDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time) {
+void odomDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time, int direction) {
   // storing initial x and y for later jCurve call
   double targetX = x;
   double targetY = y;
@@ -167,11 +163,11 @@ void odomDriveToPoint(double x, double y, bool forward, double offset, double sp
     }
   }
 
-  imuTurnToAngle(angle, false); // turn to the desired angle
+  imuTurnToAngle(angle, false, direction); // turn to the desired angle
   jCurve(targetX, targetY, forward, offset, speedMultiplier, time); // let this function handle the rest
 }
 
-void fastDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time) {
+void fastDriveToPoint(double x, double y, bool forward, double offset, double speedMultiplier, double time, int direction) {
   // storing initial x and y for later jCurve call
   double targetX = x;
   double targetY = y;
@@ -195,7 +191,7 @@ void fastDriveToPoint(double x, double y, bool forward, double offset, double sp
     }
   }
 
-  imuTurnToAngle(angle, true); // turn to the desired angle
+  imuTurnToAngle(angle, true, direction); // turn to the desired angle
   jCurve(targetX, targetY, forward, offset, speedMultiplier, time); // let this function handle the rest
 }
 
