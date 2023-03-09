@@ -189,6 +189,38 @@ void awp() {
 }
 
 void skills () {
+  // start bot straihgt, initialize, turn towards goal
+  /*
+  chassis->setState({6_ft, 0.4_ft});
+  speed = 500;
+  pros::Task startFlywheel(flywheelTask);
+  pros::delay(2000);
+  compression1.set_value(1);
+  compression2.set_value(0);
+  intake.controllerSet(-0.3);
+  pros::delay(2000);
+  intake.controllerSet(0);
+  compression1.set_value(0);
+  compression2.set_value(1);
+  pros::delay(3000);
+  compression1.set_value(1);
+  compression2.set_value(0);
+  intake.controllerSet(-0.3);
+  pros::delay(2000);
+  intake.controllerSet(0);
+  compression1.set_value(0);
+  compression2.set_value(1);
+  pros::delay(3000);
+  compression1.set_value(1);
+  compression2.set_value(0);
+  intake.controllerSet(-0.3);
+  pros::delay(2000);
+  intake.controllerSet(0);
+  compression1.set_value(0);
+  jCurve(2, 3, false);
+  fastDriveToPoint(1, 3);
+  //*/
+  // cutoff for no matchloader
   chassis->setState({1_ft, 3_ft});
   speed = 480;
   pros::Task startFlywheel(flywheelTask);
@@ -253,9 +285,8 @@ void skills () {
   relative(-2, 0.3, 0.5);
   speed = 480;
   intake.controllerSet(0);
-  blooper.set_value(1);
   relative(1, 1, 1);
-  fastDriveToPoint(7, 10, true, 0, 1);
+  fastDriveToPoint(6, 10.5, true, 0, 1);
   imuTurnToAngle(180);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
@@ -264,7 +295,7 @@ void skills () {
   intake.controllerSet(1);
   fastDriveToPoint(7, 9);
   fastDriveToPoint(5, 7);
-  imuTurnToAngle(155);
+  imuTurnToAngle(13, 5);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(2000);
