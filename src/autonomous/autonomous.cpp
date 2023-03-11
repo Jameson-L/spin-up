@@ -193,7 +193,7 @@ void awp() {
 void skills () {
   // start bot straight, initialize, turn towards goal
   // /*
-  chassis->setState({0.4_ft, 6_ft});
+  chassis->setState({0.3_ft, 6.1_ft});
   speed = 450;
   pros::Task startFlywheel(flywheelTask);
   compression2.set_value(1);
@@ -229,16 +229,16 @@ void skills () {
   // speed = 480;
   // pros::Task startFlywheel(flywheelTask);
   intake.controllerSet(1);
-  relative(-2, 0.5, 0.6);
+  relative(-2, 0.5, 0.2);
   relative(-2, 0.2, 0.4);
   jCurve(3.5, 3, true, 0, 0.3);
-  jCurve(1.8, 0.8, false);
+  jCurve(2.8, 0.8, false);
   imuTurnToAngle(90);
-  relative(-2, 0.7, 0.2);
-  relative(-2, 0.2, 0.4);
-  relative(1, 1, 1);
+  // relative(-2, 0.7, 0.2);
+  relative(-2, 0.2, 0.2);
+  // relative(1, 1, 1);
   intake.controllerSet(0);
-  fastDriveToPoint(6, 0.9);
+  jCurve(6, 0.9);
   imuTurnToAngle(10);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
@@ -248,7 +248,7 @@ void skills () {
   speed = 460;
   fastDriveToPoint(4.9, 2.6);
   fastDriveToPoint(7.1, 4.9, true, 0, 0.7);
-  imuTurnToAngle(-49);
+  imuTurnToAngle(-51);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(2000);
@@ -262,20 +262,20 @@ void skills () {
   // pros::delay(1200);
   // compression1.set_value(0);
   // intake.controllerSet(1);
-  fastDriveToPoint(10.9, 8.8, true, 0, 0.7, 0.7);
-  jCurve(10.9, 8.8, true, 0, 0.3);
+  fastDriveToPoint(10.9, 8.5, true, 0, 0.7, 0.7);
+  jCurve(10.9, 8.5, true, 0, 0.3);
   imuTurnToAngle(180);
   relative(-2, 0.7, 0.2);
   relative(-2, 0.3, 0.5);
   jCurve(9, 6);
-  imuTurnToAngle(-80);
+  imuTurnToAngle(-75);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(2000);
   intake.controllerSet(1);
   compression1.set_value(0);
-  jCurve(9, 10, true, 0, 0.7, 0.7);
-  jCurve(8, 10, true, 0, 0.3);
+  jCurve(9.5, 8, false, 0, 1);
+  fastDriveToPoint(9.5, 11, true, 0, 0.3);
   imuTurnToAngle(-90);
   intake.controllerSet(1);
   relative(-2, 0.8, 0.5);
