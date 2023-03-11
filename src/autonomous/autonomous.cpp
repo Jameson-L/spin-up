@@ -5,6 +5,8 @@
 #include "subsystems/pneumatics.hpp"
 #include "autonomous/autonomous.hpp"
 
+#include <iostream>
+
 bool continueFlywheel = false;
 double speed = 600;
 // double tbhGain = 0.00002;// tune this, try 0.00003 LOWER TARGET SPEED = HIGHER TBHGAIN
@@ -191,11 +193,12 @@ void awp() {
 }
 
 void skills () {
+  okapi::Timer timer;
   // start bot straight, initialize, turn towards goal
   // /*
   chassis->setState({0.4_ft, 6_ft}); //   chassis->setState({0.5_ft, 6.4_ft});
   speed = 450;
-  pros::Task startFlywheel(flywheelTask);
+  // pros::Task startFlywheel(flywheelTask);
   compression2.set_value(1);
   pros::delay(1000);
   compression1.set_value(1);
@@ -229,18 +232,18 @@ void skills () {
   jCurve(2.8, 1, false);
   imuTurnToAngle(90);
   relative(-2, 0.7, 0.2);
-  relative(-2, 0.2, 0.2);
+  relative(-2, 0.2, 0.4);
   relative(1, 1, 1);
   intake.controllerSet(0);
   fastDriveToPoint(6, 1.5);
-  imuTurnToAngle(10);
+  imuTurnToAngle(5);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(2000);
   compression1.set_value(0);
   intake.controllerSet(1);
   speed = 460;
-  fastDriveToPoint(5, 2.7);
+  fastDriveToPoint(4.9, 2.8);
   fastDriveToPoint(7.1, 4.9, true, 0, 0.7);
   imuTurnToAngle(-51);
   compression1.set_value(1);
@@ -248,38 +251,38 @@ void skills () {
   pros::delay(2000);
   intake.controllerSet(1);
   compression1.set_value(0);
-  fastDriveToPoint(10.9, 8.5, true, 0, 0.7, 0);
-  jCurve(10.9, 8.5, true, 0, 1);
+  fastDriveToPoint(10.9, 8.9, true, 0, 0.7, 0);
+  jCurve(10.9, 8.9, true, 0, 1);
   imuTurnToAngle(180);
   relative(-2, 0.7, 0.2);
   relative(-2, 0.3, 0.5);
   jCurve(10, 6);
-  imuTurnToAngle(-75);
+  imuTurnToAngle(-85);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(2000);
   intake.controllerSet(1);
   compression1.set_value(0);
   jCurve(10, 7, false, 0, 1);
-  fastDriveToPoint(10, 11, true, 0, 0.55);
-  fastDriveToPoint(10, 10.5, false);
+  fastDriveToPoint(9.7, 11, true, 0, 0.55);
+  fastDriveToPoint(9.7, 10.5, false);
   imuTurnToAngle(-90);
   intake.controllerSet(1);
-  relative(-2, 0.6, 0.5);
+  relative(-2, 0.5, 0.5);
   relative(-2, 0.3, 0.5);
   speed = 480;
   intake.controllerSet(0);
   relative(1, 1, 1);
   fastDriveToPoint(6, 11, true, 0, 1);
-  imuTurnToAngle(170);
+  imuTurnToAngle(-180);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(2000);
   compression1.set_value(0);
   intake.controllerSet(1);
-  fastDriveToPoint(8, 10);
-  fastDriveToPoint(5, 7);
-  imuTurnToAngle(13, 5);
+  fastDriveToPoint(7.5, 9.5);
+  fastDriveToPoint(5.5, 7.5);
+  imuTurnToAngle(120);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(2000);
@@ -287,13 +290,14 @@ void skills () {
   speed = 600;
   intake.controllerSet(1);
   fastDriveToPoint(2, 4, true, 0, 0.7, 0.7);
-  fastDriveToPoint(2, 4, true, 0, 0.55, 0.7);
+  fastDriveToPoint(2, 4, true, 0, 0.55);
   imuTurnToAngle(90);
   compression1.set_value(1);
   intake.controllerSet(-0.2);
   pros::delay(2500);
   compression1.set_value(0);
   intake.controllerSet(-0);
-  jCurve(2, 2, false);
+  jCurve(1.7, 3, false);
   imuTurnToAngle(45);
+  std::cout << timer.millis().convert(okapi::second);
 }

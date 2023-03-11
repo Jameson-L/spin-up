@@ -309,7 +309,7 @@ void relative(double x, double speedMultiplier, double time) {
     chassis->setState({chassis->getState().x, chassis->getState().y, getHeading() * okapi::degree});
     dX = chassis->getState().x.convert(okapi::foot) - startX;
     dY = chassis->getState().y.convert(okapi::foot) - startY;
-    std::cout << chassis->getState().x.convert(okapi::foot) << "\n";
+    // std::cout << chassis->getState().x.convert(okapi::foot) << "\n";
     encoderReading = sqrt(powf(dX, 2) + powf(dY, 2)); // displacement hypotenuse
     if (x < 0) {
       encoderReading *= -1;
