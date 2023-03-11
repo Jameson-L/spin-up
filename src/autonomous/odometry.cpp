@@ -338,7 +338,7 @@ void relative(double x, double speedMultiplier, double time) {
   chassis->getModel()->tank(0, 0);
 }
 
-void turnToPoint(double x, double y) {
+void turnToPoint(double x, double y, int direction) {
   // initial in-place turn:
   x -= chassis->getState().x.convert(okapi::foot); // getting target displacement x
   y -= chassis->getState().y.convert(okapi::foot); // getting target displacement y
@@ -350,7 +350,7 @@ void turnToPoint(double x, double y) {
     angle -= 180;
   }
 
-  imuTurnToAngle(angle);
+  imuTurnToAngle(angle, false, direction);
 }
 
 
