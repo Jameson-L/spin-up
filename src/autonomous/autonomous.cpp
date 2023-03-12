@@ -194,17 +194,17 @@ void awp() {
 
 void skills () {
   // start bot straight, initialize, turn towards goal
-  // /*
-  chassis->setState({0.4_ft, 6_ft}); //   chassis->setState({0.5_ft, 6.4_ft});
-  speed = 450;
+  chassis->setState({0.4_ft, 6_ft});
+  speed = 470;
   pros::Task startFlywheel(flywheelTask);
+  intake.controllerSet(0.2);
   compression2.set_value(1);
-  pros::delay(1000);
+  pros::delay(1500);
   compression1.set_value(1);
   compression2.set_value(0);
   intake.controllerSet(-0.3);
   pros::delay(1800);
-  intake.controllerSet(0);
+  intake.controllerSet(0.2);
   compression1.set_value(0);
   compression2.set_value(1);
   pros::delay(2500);
@@ -212,7 +212,7 @@ void skills () {
   compression2.set_value(0);
   intake.controllerSet(-0.3);
   pros::delay(1800);
-  intake.controllerSet(0);
+  intake.controllerSet(0.2);
   compression1.set_value(0);
   compression2.set_value(1);
   pros::delay(2500);
@@ -227,9 +227,9 @@ void skills () {
   intake.controllerSet(1);
   relative(-2, 0.5, 0.2);
   relative(-2, 0.2, 0.5);
-  jCurve(4, 3.1, true, 1.8, 1);
-  jCurve(4, 3.1, true, 0, 0.2);
-  jCurve(2.8, 1, false, 0, 1, 1);
+  jCurve(4, 3.1, true, 0, 1, 0.3);
+  jCurve(4, 3.1, true, 0, 0.2, 2.5);
+  jCurve(2.8, 1, false, 0, 1, 1.5);
   fastDriveToPoint(2.8, -1, false, 0, 0.5, 0.25);
   relative(-2, 0.2, 0.5);
   relative(1, 1, 0.5);
@@ -250,7 +250,7 @@ void skills () {
   pros::delay(1700);
   intake.controllerSet(1);
   compression1.set_value(0);
-  fastDriveToPoint(10.9, 8.9, true, 0, 0.7, 2.5);
+  fastDriveToPoint(10.9, 9, true, 0, 0.7, 2.5);
   imuTurnToAngle(180, true);
   relative(-2, 0.7, 0.2);
   relative(-2, 0.3, 0.5);
@@ -261,9 +261,9 @@ void skills () {
   pros::delay(2000);
   intake.controllerSet(1);
   compression1.set_value(0);
-  fastDriveToPoint(9.6, 10.5, true, 2, 0.55, 2.5);
-  fastDriveToPoint(9.6, 10.5, true, 0, 0.55, 2.5);
-  imuTurnToAngle(-92);
+  fastDriveToPoint(9.5, 10.5, true, 0, 1, 0.5);
+  fastDriveToPoint(9.5, 10.5, true, 0, 0.25, 2.5);
+  imuTurnToAngle(-90);
   intake.controllerSet(1);
   relative(-2, 0.5, 0.4);
   relative(-2, 0.3, 0.5);
@@ -271,14 +271,14 @@ void skills () {
   intake.controllerSet(0);
   relative(1, 1, 0.7);
   fastDriveToPoint(6.3, 10.5, true, 0, 1, 1.5);
-  imuTurnToAngle(-180);
+  imuTurnToAngle(-170);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(2000);
   compression1.set_value(0);
   intake.controllerSet(1);
   fastDriveToPoint(7.5, 9.3, true, 0, 1, 0.9);
-  fastDriveToPoint(5.2, 7, true, 0, 1, 0.9);
+  fastDriveToPoint(5.2, 7, true, 0, 1, 1);
   imuTurnToAngle(120);
   compression1.set_value(1);
   intake.controllerSet(-0.4);
