@@ -54,8 +54,8 @@ void initialize() {
 	expansion.set_value(0);
 	blooper.set_value(0);
 	compression1.set_value(0);
-	// compression2.set_value(0);
-	compression2.set_value(1);
+	compression2.set_value(0);
+	// compression2.set_value(1);
 	// vision.set_signature(1, &blue);
 	// vision.set_signature(2, &red);
 
@@ -86,14 +86,14 @@ void autonomous() {
 	// pros::c::adi_digital_write(kPneumaticExpansionPort2, LOW); // default position
 	// pros::c::adi_pin_mode(kPneumaticBlooperPort, LOW);
 
-	// if (auton == 0) {
-	// 	left();
-	// } else if (auton == 1) {
-	// 	awp();
-	// } else if (auton == 2){
-	// 	right();
-	// }
-	skills();
+	if (auton == 0) {
+		left();
+	} else if (auton == 1) {
+		awp();
+	} else if (auton == 2){
+		right();
+	}
+	// skills();
 	// std::cout << auton;
 }
 
