@@ -199,7 +199,7 @@ void skills () {
   pros::Task startFlywheel(flywheelTask);
   intake.controllerSet(0.2);
   compression2.set_value(1);
-  pros::delay(1500);
+  pros::delay(1200);
   compression1.set_value(1);
   compression2.set_value(0);
   intake.controllerSet(-0.3);
@@ -238,7 +238,7 @@ void skills () {
   imuTurnToAngle(5);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
-  pros::delay(2000);
+  pros::delay(1800);
   compression1.set_value(0);
   intake.controllerSet(1);
   speed = 460;
@@ -258,7 +258,7 @@ void skills () {
   imuTurnToAngle(-82);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
-  pros::delay(2000);
+  pros::delay(1800);
   intake.controllerSet(1);
   compression1.set_value(0);
   fastDriveToPoint(9.5, 10.5, true, 0, 1, 0.5);
@@ -274,11 +274,11 @@ void skills () {
   imuTurnToAngle(-170);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
-  pros::delay(2000);
+  pros::delay(1800);
   compression1.set_value(0);
   intake.controllerSet(1);
   fastDriveToPoint(7.5, 9.3, true, 0, 1, 0.9);
-  fastDriveToPoint(5.2, 7, true, 0, 1, 1);
+  fastDriveToPoint(5.2, 7, true, 0, 1, 1.1);
   imuTurnToAngle(120);
   compression1.set_value(1);
   intake.controllerSet(-0.4);
@@ -290,7 +290,7 @@ void skills () {
   imuTurnToAngle(85);
   compression1.set_value(1);
   intake.controllerSet(-0.2);
-  pros::delay(2500);
+  pros::delay(2200);
   compression1.set_value(0);
   intake.controllerSet(-0);
   jCurve(1.4, 2.4, false, 0, 1, 1);
