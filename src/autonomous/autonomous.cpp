@@ -197,7 +197,7 @@ void skills () {
   // /*
   chassis->setState({0.4_ft, 6_ft}); //   chassis->setState({0.5_ft, 6.4_ft});
   speed = 450;
-  // pros::Task startFlywheel(flywheelTask);
+  pros::Task startFlywheel(flywheelTask);
   compression2.set_value(1);
   pros::delay(1000);
   compression1.set_value(1);
@@ -227,7 +227,8 @@ void skills () {
   intake.controllerSet(1);
   relative(-2, 0.5, 0.2);
   relative(-2, 0.2, 0.5);
-  jCurve(4, 3.1, true, 0, 0.55);
+  jCurve(4, 3.1, true, 1.8, 1);
+  jCurve(4, 3.1, true, 0, 0.2);
   jCurve(2.8, 1, false, 0, 1, 1);
   fastDriveToPoint(2.8, -1, false, 0, 0.5, 0.25);
   relative(-2, 0.2, 0.5);
@@ -260,6 +261,7 @@ void skills () {
   pros::delay(2000);
   intake.controllerSet(1);
   compression1.set_value(0);
+  fastDriveToPoint(9.6, 10.5, true, 2, 0.55, 2.5);
   fastDriveToPoint(9.6, 10.5, true, 0, 0.55, 2.5);
   imuTurnToAngle(-92);
   intake.controllerSet(1);

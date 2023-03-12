@@ -1,7 +1,7 @@
 {
     "py/object": "pros.conductor.project.Project",
     "py/state": {
-        "project_name": "tipping-point-5776t-worlds",
+        "project_name": "spin-up-5776t",
         "target": "v5",
         "templates": {
             "kernel": {

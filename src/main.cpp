@@ -304,9 +304,9 @@ void opcontrol() {
 		}
 
 		if (expandToggle) {
-			expansion.set_value(0);
-		} else {
 			expansion.set_value(1);
+		} else {
+			expansion.set_value(0);
 		}
 
 		// set power variables
