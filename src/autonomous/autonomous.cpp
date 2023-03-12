@@ -58,6 +58,7 @@ void flywheelTask() {
     }
     rate.delay(100_Hz);
   }
+  flywheel.controllerSet(0);
 }
 
 // void awaitFlywheel() {
@@ -83,6 +84,7 @@ void right() {
   // awaitFlywheel();
   // intake.moveRelative(-235, 600);
   // pros::delay(1500);
+  compression1.set_value(1);
   for (int i = 0; i < 2; i++) {
     // awaitFlywheel();
     intake.moveRelative(-235, 600);
@@ -91,6 +93,7 @@ void right() {
   intake.controllerSet(-1);
   // intake.moveRelative(-255, 600);
   pros::delay(900);
+  compression1.set_value(0);
   // pros::delay(200);
 
   // line of 2 discs and aim
@@ -102,6 +105,7 @@ void right() {
   intake.controllerSet(0);
   pros::delay(500);
   // shoot 2
+  compression1.set_value(1);
   for (int i = 0; i < 1; i++) {
     // awaitFlywheel();
     intake.moveRelative(-235, 600);
@@ -110,6 +114,7 @@ void right() {
   intake.controllerSet(-1);
   // intake.moveRelative(-255, 600);
   pros::delay(600);
+  compression1.set_value(0);
   intake.controllerSet(0);
   // pros::delay(200);
   continueFlywheel = false;
@@ -158,6 +163,7 @@ void left() {
   pros::delay(1500);
 
   // shoot 3
+  compression1.set_value(1);
   for (int i = 0; i < 1; i++) {
     // awaitFlywheel();
     intake.moveRelative(-235, 600);
@@ -165,7 +171,7 @@ void left() {
   }
   intake.controllerSet(-1);
   pros::delay(1100);
-
+  compression1.set_value(0);
   // stack of discs and aim
   // intake.controllerSet(-1);
   speed = 520;
@@ -178,6 +184,7 @@ void left() {
   intake.controllerSet(0);
   pros::delay(200);
 
+  compression1.set_value(1);
   for (int i = 0; i < 2; i++) {
     // awaitFlywheel();
     intake.moveRelative(-235, 600);
@@ -186,6 +193,7 @@ void left() {
   intake.controllerSet(-1);
   // intake.moveRelative(-255, 600);
   pros::delay(1000);
+  compression1.set_value(0);
   continueFlywheel = false;
 }
 
@@ -199,7 +207,7 @@ void skills () {
   pros::Task startFlywheel(flywheelTask);
   intake.controllerSet(0.2);
   compression2.set_value(1);
-  pros::delay(1200);
+  pros::delay(1000);
   compression1.set_value(1);
   compression2.set_value(0);
   intake.controllerSet(-0.3);
@@ -235,6 +243,7 @@ void skills () {
   relative(1, 1, 0.5);
   intake.controllerSet(0);
   fastDriveToPoint(6, 1.5, true, 0, 1, 1);
+  intake.controllerSet(1);
   imuTurnToAngle(5);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
@@ -244,10 +253,10 @@ void skills () {
   speed = 460;
   fastDriveToPoint(4.9, 2.8, true, 0, 1, 0.9);
   fastDriveToPoint(7.1, 4.9, true, 0, 0.9);
-  imuTurnToAngle(-51);
+  imuTurnToAngle(-49);
   compression1.set_value(1);
   intake.controllerSet(-0.4);
-  pros::delay(1700);
+  pros::delay(1600);
   intake.controllerSet(1);
   compression1.set_value(0);
   fastDriveToPoint(10.9, 9, true, 0, 0.7, 2.5);
@@ -255,7 +264,7 @@ void skills () {
   relative(-2, 0.7, 0.2);
   relative(-2, 0.3, 0.5);
   jCurve(9.6, 6, true, 0, 1, 1.2);
-  imuTurnToAngle(-82);
+  imuTurnToAngle(-70);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(1700);
@@ -271,22 +280,22 @@ void skills () {
   intake.controllerSet(0);
   relative(1, 1, 0.7);
   fastDriveToPoint(6.3, 10.5, true, 0, 1, 1.5);
-  imuTurnToAngle(-170);
+  imuTurnToAngle(-165);
   compression1.set_value(1);
   intake.controllerSet(-0.3);
   pros::delay(1700);
   compression1.set_value(0);
   intake.controllerSet(1);
-  fastDriveToPoint(7.5, 9.3, true, 0, 1, 0.9);
-  fastDriveToPoint(5.2, 7, true, 0, 1, 1.1);
-  imuTurnToAngle(120);
+  fastDriveToPoint(7.3, 9.1, true, 0, 1, 0.9);
+  fastDriveToPoint(5.2, 6.9, true, 0, 1, 1.1);
+  imuTurnToAngle(125);
   compression1.set_value(1);
   intake.controllerSet(-0.4);
-  pros::delay(1700);
+  pros::delay(1600);
   compression1.set_value(0);
   speed = 600;
   intake.controllerSet(1);
-  fastDriveToPoint(2, 4.5, true, 0, 0.55, 2.5);
+  fastDriveToPoint(2, 4, true, 0, 0.7, 2);
   imuTurnToAngle(85);
   compression1.set_value(1);
   intake.controllerSet(-0.2);
@@ -294,7 +303,7 @@ void skills () {
   compression1.set_value(0);
   // intake.controllerSet(0);
   jCurve(1.4, 1.4, false, 0, 1, 1);
-  imuTurnToAngle(47);
+  imuTurnToAngle(43);
   expansion.set_value(1);
   intake.controllerSet(0);
   continueFlywheel = false;

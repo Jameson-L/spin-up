@@ -54,7 +54,8 @@ void initialize() {
 	expansion.set_value(0);
 	blooper.set_value(0);
 	compression1.set_value(0);
-	compression2.set_value(0);
+	// compression2.set_value(0);
+	compression2.set_value(1);
 	// vision.set_signature(1, &blue);
 	// vision.set_signature(2, &red);
 
